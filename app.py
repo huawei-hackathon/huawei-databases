@@ -6,5 +6,9 @@ app = Flask(__name__)
 def hello_world():
     return "<p>Hello, World!</p>"
 
+@app.route("/testing")
+def testing():
+    return "<p>Hello, World!</p>"
 
-app.run(debug=True, port=8080)
+app.run(debug=True, port=80, host="0.0.0.0")
+
