@@ -15,3 +15,12 @@ def uploadFoodImage():
     image.save('tmp.png', 'png')
     hctools.uploadFoodObject('tmp.png', userId)
     return json.dumps("200")
+
+def queryFoodImages():
+    obj=request.data.decode("utf-8")
+    obj = obj.replace("'", '"') # Replace ' with " for json decoding
+    obj = json.loads(obj)
+    userId = obj['userId']
+    date = obj['date']
+    return hctools.getFoodObjectsByDate(userId, date)
+    return json.dumps(hctools.getFoodObjectsByDate(userId, date))
