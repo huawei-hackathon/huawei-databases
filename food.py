@@ -22,5 +22,11 @@ def queryFoodImages():
     obj = json.loads(obj)
     userId = obj['userId']
     date = obj['date']
-    return hctools.getFoodObjectsByDate(userId, date)
     return json.dumps(hctools.getFoodObjectsByDate(userId, date))
+
+def queryLastMeal():
+    obj=request.data.decode("utf-8")
+    obj = obj.replace("'", '"') # Replace ' with " for json decoding
+    obj = json.loads(obj)
+    userId = obj['userId']
+    return json.dumps(hctools.getLastMeal(userId))
