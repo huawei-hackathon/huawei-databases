@@ -1,0 +1,57 @@
+import base64
+import requests
+import mysql.connector 
+from password import SQL_PASSWORD
+
+mydb = mysql.connector.connect(
+  host="192.168.0.27",
+  user="root",
+  password=SQL_PASSWORD,
+  database='communication'
+)
+
+mycursor = mydb.cursor()
+
+def recordedMessage(userId, audio):
+    pass
+
+def announceMessage(userId, announcementText):
+    ''' INSERT INTO DB '''
+    sqlCommand = f"INSERT INTO `announcements` (userId, announcementText) VALEUS ('{userId}', '{announcementText}')"
+    mycursor.execute(sqlCommand)
+    mydb.commit()
+
+    ''' SENDING REQUEST ''' 
+    sqlCommand = f"SELECT userId FROM `tunnels` WHERE userId = '{userId}'"
+    mycursor.execute(sqlCommand)
+    result = mycursor.fetchone()
+    print(result)
+    if result == None:
+        return {'status': 300, 'error': 'No tunnel URL found!'}
+    try:
+        url = result
+    except:
+        return {'status': 300, 'error': 'Announcement Failed!'}
+    return {}
+    pass
+
+def announcementEndpointUpdate(userId, tunnelUrl):
+    ''' CHECK IF USERID IS ALREADY IN DB ''' 
+    sqlCommand = f"SELECT userId FROM `tunnels` WHERE userId = '{userId}'"
+    mycursor.execute(sqlCommand)
+    result = mycursor.fetchone()
+    
+    ''' NOT YET IN DB '''
+    if result == None:
+        mycursor.execute (f"INSERT INTO `tunnels` (userId, tunnelUrl) VALUES ('{userId}', '{tunnelUrl}')")
+        mydb.commit()
+        print("Created New Entry")
+    else:
+        mycursor.execute (f"UPDATE `tunnels` SET tunnelUrl = '{tunnelUrl}' WHERE userId = '{userId}'")
+        mydb.commit()
+        print("Updated Existing Entry")
+
+if __name__ == '__main__':
+    announcementEndpointUpdate(14, 'https://tidy-insect-49.loca.lt/') 
+    announceMessage(14, 'hello!')
+
