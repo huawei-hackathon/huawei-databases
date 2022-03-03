@@ -1,3 +1,5 @@
+import base64
+import bcrypt
 import mysql.connector 
 from password import SQL_PASSWORD
 
@@ -14,12 +16,33 @@ def createElderly(name, age, caregiverName):
     pass
 
 def createCaregiver(name, password):
-    pass
+    hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
+    hashed = hashed.decode('utf-8') 
+    # Put hashed as string into database
+    sqlCommand = f"INSERT INTO `caregivers` (name, password) VALUES ('{name}', '{hashed}')"
+    mycursor.execute(sqlCommand)
+    mycursor.execute("SELECT LAST_INSERT_ID()")
+    caregiverUserId = mycursor.fetchone()[0]
+    return caregiverUserId
 
-def getElderlyProfile(name):
-    pass
+def authenticateCaregiver(caregiverUserId, password):
+    sqlCommand = f"\
+        SELECT * FROM `caregivers` WHERE caregiverUserId = {caregiverUserId} \
+    "
+    mycursor.execute(sqlCommand)
+    hashed = mycursor.fetchone()[2]
+    hashed = hashed.encode('utf-8')
+    result = bcrypt.checkpw(password.encode('utf-8'), hashed)
+    return result
+
+def getElderlyProfile(userId):
+    pasr
 
 if __name__ == '__main__':
-    print(mydb)
+    id = createCaregiver('daren', 'testing')
+    print(authenticateCaregiver(id, 'test'))
+    print(authenticateCaregiver(id, 'testing'))
+    #mycursor.execute("SELECT * FROM `caregivers`")
+    #print(mydb)
 
 
