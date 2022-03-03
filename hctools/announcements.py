@@ -28,7 +28,7 @@ def announceMessage(userId, announcementText):
     if result == None:
         return {'status': 300, 'error': 'No tunnel URL found!'}
     try:
-        url = f'{result}announceMessage'
+        url = f'{result}/announceMessage'
         data = {'text': announcementText}
         response = requests.post(url, json=data)
         return {'status': response.status_code}

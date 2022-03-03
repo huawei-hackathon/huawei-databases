@@ -10,10 +10,10 @@ def announcementEndpointUpdate():
     tunnelUrl = obj['tunnelUrl']
     return json.dumps(announcements.announcementEndpointUpdate(userId, tunnelUrl))
 
-def recordedMessage():
+def announceMessage():
     obj=request.data.decode("utf-8")
     obj = obj.replace("'", '"') # Replace ' with " for json decoding
     obj = json.loads(obj)
     userId = obj['userId']
     text = obj['text']
-    return json.dumps(announcements.recordedMessage(userId, text))
+    return json.dumps(announcements.announceMessage(userId, text))

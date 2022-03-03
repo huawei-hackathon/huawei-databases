@@ -24,7 +24,7 @@ app.add_url_rule('/users/authenticateCaregiver', view_func = users.authenticateC
 
 ''' ANNOUNCEMENTS ''' 
 app.add_url_rule('/announcementEndpointUpdate', view_func = announcements.announcementEndpointUpdate, methods=['POST'])
-app.add_url_rule('/authenticateCaregiver', view_func = announcements.recordedMessage, methods=['POST'])
+app.add_url_rule('/announceMessage', view_func = announcements.announceMessage, methods=['POST'])
 
 app.run(debug=True, port=80, host="0.0.0.0")
 
