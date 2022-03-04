@@ -15,7 +15,7 @@ mycursor = mydb.cursor()
 
 ''' https://techoverflow.net/2019/05/16/how-to-get-number-of-days-in-month-in-python/ '''
 def number_of_days_in_month(year, month):
-    print(year,month)
+    #print(year,month)
     return monthrange(year, month)[1]
 
 def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency):
@@ -25,9 +25,9 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
     sqlCommand = f"SELECT value,timestamp FROM `{healthInfoType}` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
     mycursor.execute(sqlCommand)
     result = mycursor.fetchall() 
-    pprint(result)
+    #pprint(result)
     data = {}
-
+    
     maxValue = 0
     if frequency == 'day': maxValue = 24
     elif frequency == 'week': maxValue = 7
@@ -41,17 +41,60 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
         ''' 1 to 31 days of month '''
         ''' 1 to 12 months of year '''
         for i in range(1, maxValue+1): data[i] = []
-    
-    for entry in result:
-        target = 0 
-        value = entry[0]
-        timestamp = entry[1]
-        if frequency == 'day':target = timestamp.hour
-        elif frequency == 'week': target = timestamp.weekday()
-        elif frequency == 'month': target = timestamp.day
-        elif frequency == 'year': target = timestamp.month
 
-        data[target].append(value)
+    if healthInfoType == 'stepcount':
+        ''' STEP COUNT IS SEPARATE DUE TO CUMULATIVE ''' 
+        if frequency == 'day':
+            total = max(i[0] for i in result)
+            for i in range(24):
+                data[i] = [int(total/24)]
+            leftover = total - 24*int(total/24)
+            for i in range(leftover):
+                data[i][0] += 1
+        elif frequency in ['week', 'month']:
+            ''' CALCULATE MAXIMUM STEP COUNTS OF DATES ''' 
+            dailyMax = {}
+
+            for entry in result:
+                dateString = entry[1].strftime("%d/%m/%Y")
+                if dateString not in dailyMax.keys():
+                    dailyMax[dateString] = entry[0]
+                else:
+                    dailyMax[dateString] = max(dailyMax[dateString], entry[0])
+
+            for dateString in dailyMax:
+                value = dailyMax[dateString]
+                timestamp = datetime.strptime(dateString, "%d/%m/%Y")
+                if frequency == 'week': target = timestamp.weekday()
+                elif frequency == 'month': target = timestamp.day
+                data[target] = [value]
+        elif frequency == 'year':
+            monthlyMax = {}
+
+            for entry in result:
+                dateString = entry[1].strftime("%m/%Y")
+                if dateString not in monthlyMax.keys():
+                    monthlyMax[dateString] = entry[0]
+                else:
+                    monthlyMax[dateString] = max(monthlyMax[dateString], entry[0])
+
+            for dateString in monthlyMax:
+                value = monthlyMax[dateString]
+                timestamp = datetime.strptime(dateString, "%m/%Y")
+                target = timestamp.month
+                data[target] = [value]
+
+    else: 
+        for entry in result:
+            target = 0 
+            value = entry[0]
+            timestamp = entry[1]
+            if frequency == 'day':target = timestamp.hour
+            elif frequency == 'week': target = timestamp.weekday()
+            elif frequency == 'month': target = timestamp.day
+            elif frequency == 'year': target = timestamp.month
+
+            data[target].append(value)
 
     processedData = []
     for i in data:

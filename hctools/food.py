@@ -44,8 +44,6 @@ def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
         else: 
             break
 
-    print(targets)
-
     return targets
 
 def getLastMeal(userId):
