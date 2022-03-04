@@ -1,7 +1,3 @@
-""" 
-HCTOOLS.py
-HUAWEI CLOUD TOOLS
-"""
 import base64
 import subprocess
 from uuid import uuid4

@@ -1,6 +1,6 @@
 from flask import Flask
 
-from routes import food, users, announcements
+from routes import food, users, announcements, healthInfo
 app = Flask(__name__)
 
 @app.route("/")
@@ -25,6 +25,10 @@ app.add_url_rule('/users/authenticateCaregiver', view_func = users.authenticateC
 ''' ANNOUNCEMENTS ''' 
 app.add_url_rule('/announcementEndpointUpdate', view_func = announcements.announcementEndpointUpdate, methods=['POST'])
 app.add_url_rule('/announceMessage', view_func = announcements.announceMessage, methods=['POST'])
+
+''' HEALTH INFORMATION '''
+app.add_url_rule('/<healthInfoType>/<frequency>', view_func = healthInfo.getHealthInformation, methods=['GET'])
+app.add_url_rule('/<healthInfoType>/postData', view_func = healthInfo.updateHealthInformation, methods=['POST'])
 
 app.run(debug=True, port=80, host="0.0.0.0")
 

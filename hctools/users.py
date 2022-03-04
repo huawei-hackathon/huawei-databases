@@ -35,6 +35,7 @@ def authenticateCaregiver(caregiverUserId, password):
     sqlCommand = f"\
         SELECT * FROM `caregivers` WHERE caregiverUserId = {caregiverUserId} \
     "
+    print(sqlCommand)
     mycursor.execute(sqlCommand)
     hashed = mycursor.fetchone()[2]
     hashed = hashed.encode('utf-8')
@@ -58,10 +59,10 @@ def getElderlyProfile(userId):
         }
 
 if __name__ == '__main__':
-    id = createCaregiver('daren', 'testing')
+    id = createCaregiver('daren', 'testing')['caregiverUserId']
     print(authenticateCaregiver(id, 'test'))
     print(authenticateCaregiver(id, 'testing'))
-    userId = createElderly('glenda', 18, 27)
+    userId = createElderly('glenda', 18, id)['userId']
     print(getElderlyProfile(userId))
     #mycursor.execute("SELECT * FROM `caregivers`")
     #print(mydb)
