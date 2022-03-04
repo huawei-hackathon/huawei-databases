@@ -8,7 +8,7 @@ def getHealthInformation(healthInfoType, frequency):
     obj=request.data.decode("utf-8")
     obj = obj.replace("'", '"') # Replace ' with " for json decoding
     obj = json.loads(obj)
-    if healthInfoType not in ['heartRate', 'bloodOxygen', 'stepCount']:
+    if healthInfoType not in ['stepAssymetry', 'heartRate', 'stepCount']:
         return {'status':300, 'error': 'Invalid Type of Health Information!'}
     if frequency not in ['day', 'week', 'month', 'year']:
         return {'status':300, 'error': 'Invalid Frequency for Health Information!'}
@@ -33,7 +33,7 @@ def updateHealthInformation(healthInfoType):
     obj=request.data.decode("utf-8")
     obj = obj.replace("'", '"') # Replace ' with " for json decoding
     obj = json.loads(obj)
-    if healthInfoType not in ['heartRate', 'bloodOxygen', 'stepCount']:
+    if healthInfoType not in ['stepAssymetry', 'heartRate', 'stepCount']:
         return {'status':300, 'error': 'Invalid Type of Health Information!'}
     value = obj['value']
     userId = obj['userId']
