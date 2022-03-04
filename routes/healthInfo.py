@@ -12,7 +12,7 @@ def getHealthInformation(healthInfoType, frequency):
         return {'status':300, 'error': 'Invalid Type of Health Information!'}
     if frequency not in ['day', 'week', 'month', 'year']:
         return {'status':300, 'error': 'Invalid Frequency for Health Information!'}
-    userId = obj['userId']
+    userId = int(obj['userId'])
     lastDate = datetime.strptime(obj['date'], '%Y-%m-%d')
     lastDate = lastDate + timedelta(hours=23, minutes=59, seconds=59)
     firstDate = lastDate
@@ -36,5 +36,5 @@ def updateHealthInformation(healthInfoType):
     if healthInfoType not in ['stepAsymmetry', 'heartRate', 'stepCount', 'sleepSeconds']:
         return {'status':300, 'error': 'Invalid Type of Health Information!'}
     value = obj['value']
-    userId = obj['userId']
+    userId = int(obj['userId'])
     return json.dumps(healthInfo.updateHealthInformation(healthInfoType, userId, value))

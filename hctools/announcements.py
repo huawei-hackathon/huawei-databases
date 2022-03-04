@@ -18,15 +18,15 @@ FOOD_IMAGES_BUCKET = 'hackathon-food-images'
 """ PREFIXES IS FOR RUNNING OF HUAWEI LIBRARY COMMANDS """
 OBSUTIL_PREFIX = './../obsutil/obsutil'
 
-def sendRequest(command, userId):
+def sendRequest(command, userId, announcementText):
     sqlCommand = f"SELECT tunnelUrl FROM `tunnels` WHERE userId = '{userId}'"
     mycursor.execute(sqlCommand)
     result = mycursor.fetchone()[0]
     if result == None:
         return {'status': 300, 'error': 'No tunnel URL found!'}
+    url = f'{result}/{command}' # Either recorded or announce message
+    data = {'text': announcementText}
     try:
-        url = f'{result}/{command}' # Either recorded or announce message
-        data = {'text': announcementText}
         response = requests.post(url, json=data)
         return {'status': response.status_code}
     except:
@@ -50,7 +50,7 @@ def recordedMessage(userId, audio):
     process = subprocess.run(cmd, shell=True, capture_output=True)
     return process
 
-    sendRequest('recordedMessage', userId)
+    return sendRequest('recordedMessage', userId, '')
     pass
 
 def announceMessage(userId, announcementText):
@@ -60,7 +60,7 @@ def announceMessage(userId, announcementText):
     mydb.commit()
 
     ''' SENDING REQUEST ''' 
-    sendRequest('announceMessage', userId)
+    return sendRequest('announceMessage', userId, announcementText)
 
 def announcementEndpointUpdate(userId, tunnelUrl):
     ''' CHECK IF USERID IS ALREADY IN DB ''' 

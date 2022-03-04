@@ -9,7 +9,7 @@ def uploadFoodImage():
     obj=request.data.decode("utf-8")
     obj = obj.replace("'", '"') # Replace ' with " for json decoding
     obj = json.loads(obj)
-    userId = obj['userId']
+    userId = int(obj['userId'])
     image = obj['image']
     image = Image.open(BytesIO(base64.b64decode(image)))
     image.save('tmp.png', 'png')
@@ -20,7 +20,7 @@ def queryFoodImages():
     obj=request.data.decode("utf-8")
     obj = obj.replace("'", '"') # Replace ' with " for json decoding
     obj = json.loads(obj)
-    userId = obj['userId']
+    userId = int(obj['userId'])
     date = obj['date']
     return json.dumps(food.getFoodObjectsByDate(userId, date))
 
@@ -28,5 +28,5 @@ def queryLastMeal():
     obj=request.data.decode("utf-8")
     obj = obj.replace("'", '"') # Replace ' with " for json decoding
     obj = json.loads(obj)
-    userId = obj['userId']
+    userId = int(obj['userId'])
     return json.dumps(food.getLastMeal(userId))
