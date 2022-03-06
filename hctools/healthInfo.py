@@ -107,7 +107,7 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
             processedData.append({'y': round(int(sum(values)/len(values)),2), 'x': i})
     return processedData
 
-def updateHealthInformation(healthInfoType, userId, value):
+def updateHealthInformation(healthInfoType, userId, value, timestamp):
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -118,7 +118,11 @@ def updateHealthInformation(healthInfoType, userId, value):
     mycursor = mydb.cursor()
     
     healthInfoType = healthInfoType.lower()
-    sqlCommand = f"INSERT INTO `{healthInfoType}` (userId, value, timestamp) VALUES ({userId}, {value}, CURRENT_TIMESTAMP)"
+    if timestamp == None:
+        sqlCommand = f"INSERT INTO `{healthInfoType}` (userId, value, timestamp) VALUES ({userId}, {value}, CURRENT_TIMESTAMP)"
+    else:
+        sqlCommand = f"INSERT INTO `{healthInfoType}` (userId, value, timestamp) VALUES ({userId}, {value}, 'timestamp')"
+
     mycursor.execute(sqlCommand)
     mydb.commit()
     return {'status': 200}

@@ -37,4 +37,7 @@ def updateHealthInformation(healthInfoType):
         return {'status':300, 'error': 'Invalid Type of Health Information!'}
     value = obj['value']
     userId = int(obj['userId'])
-    return json.dumps(healthInfo.updateHealthInformation(healthInfoType, userId, value))
+    timestamp = None
+    if "timestamp" in obj.keys():
+        timestamp = obj['timestamp']
+    return json.dumps(healthInfo.updateHealthInformation(healthInfoType, userId, value, timestamp))

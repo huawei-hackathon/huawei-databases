@@ -16,9 +16,12 @@ def locationUpdate():
     obj = json.loads(obj)
     userId = int(obj['userId'])
     roomName = obj['roomName']
+    timestamp = None
+    if 'timestamp' in obj.keys():
+        timestamp = obj['timestamp']
     if roomName not in ['Outside', 'Living Room', 'Bedroom', 'Bathroom', 'Kitchen']:
         return {"status":300, "error": "Invalid Room Name"}
-    return json.dumps(bluetooth.locationUpdate(userId, roomName))
+    return json.dumps(bluetooth.locationUpdate(userId, roomName, timestamp))
 
 def currentLocation():
     obj=request.data.decode("utf-8")

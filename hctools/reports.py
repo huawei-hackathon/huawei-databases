@@ -8,7 +8,7 @@ from calendar import monthrange
 from password import SQL_PASSWORD
 from datetime import datetime, timedelta, date 
 from dateutil.relativedelta import relativedelta
-from hctools import announcements, food, healthInfo, users
+from hctools import announcements, food, healthInfo, users, bluetooth
 
 def mean(array):
     return round(sum(array) / len(array), 2)
@@ -92,6 +92,18 @@ def getData (userId):
     asymmetryList = [0] * daysInMonth
     for i in asymmetry: asymmetryList[i['x']-1] = i['y']
 
+    roomNames = ["Living Room", "Bedroom", "Bathroom", "Kitchen", "Outside"]
+    firstday = lastday + timedelta(days=1)
+    bluetoothInfoResult = bluetooth.getBluetoothInformation(userId, firstday, lastday, "month")
+    bluetoothInfo = {}
+    for i in bluetoothInfoResult:
+        bluetoothInfo[i['roomName']] = i['times']
+
+    pieData = []
+    for i in roomNames:
+        pieData.append(sum(bluetoothInfo[i]))
+    print(bluetoothInfo)
+
     data = {
             "elderlyName": elderlyInfo['name'],
             "elderlyAge": elderlyInfo['age'],
@@ -108,27 +120,27 @@ def getData (userId):
                 "label": "Living Room",
                 "backgroundColor": "#4e73df",
                 "hoverBackgroundColor": "#2e59d9",
-                "data": [8.6, 7.0, 11.3, 8.1, 8.4, 9.4, 8.1, 8.8, 8.5, 8.2, 7.4, 8.9, 8.3, 7.8, 8.4, 6.8, 8.7, 6.6, 9.0, 7.3, 5.0, 9.7, 5.1, 4.6, 8.2, 7.9, 4.4, 7.4, 8.3, 6.7, 8.0]
+                "data": bluetoothInfo['Living Room']
                 }, {
                 "label": "Bedroom",
                 "backgroundColor": "#e74a3b",
                 "hoverBackgroundColor": "#A8362C",
-                "data": [6.6, 6.9, 6.8, 7.9, 6.5, 6.4, 6.2, 6.3, 6.5, 7.3, 6.6, 7.8, 7.3, 7.3, 7.2, 7.1, 6.5, 7.9, 6.4, 6.7, 7.5, 6.8, 7.8, 7.7, 6.0, 7.4, 7.4, 6.0, 7.3, 6.7, 7.7]
+                "data": bluetoothInfo['Living Room']
                 }, {
                 "label": "Bathroom",
                 "backgroundColor": "#36b9cc",
                 "hoverBackgroundColor": "#247E8C",
-                "data": [0.7, 1.7, 0.5, 0.8, 0.5, 1.0, 1.1, 0.8, 0.6, 1.4, 1.0, 1.4, 0.6, 1.0, 1.8, 0.8, 0.7, 1.9, 1.8, 1.7, 1.9, 1.5, 1.9, 1.9, 0.6, 2.0, 1.7, 1.9, 0.5, 1.7, 1.5]
+                "data": bluetoothInfo['Bathroom']
                 }, {
                 "label": "Kitchen",
                 "backgroundColor": "#1cc88a",
                 "hoverBackgroundColor": "#13875D",
-                "data": [3.4, 3.0, 3.3, 3.8, 3.0, 3.6, 4.1, 4.1, 4.0, 3.3, 3.8, 3.4, 3.6, 4.3, 3.3, 3.3, 3.3, 3.9, 3.9, 3.3, 4.3, 3.4, 3.6, 4.1, 3.5, 3.1, 4.5, 3.8, 3.1, 3.4, 4.3]
+                "data": bluetoothInfo['Kitchen']
                 }, {
                 "label": "Outside",
                 "backgroundColor": "#C0CCC9",
                 "hoverBackgroundColor": "#88908E",
-                "data": [4.7, 5.4, 2.1, 3.4, 5.6, 3.6, 4.5, 4.0, 4.4, 3.8, 5.2, 2.5, 4.2, 3.6, 3.3, 6.0, 4.8, 3.7, 2.9, 5.0, 5.3, 2.6, 5.6, 5.7, 5.7, 3.6, 6.0, 4.9, 4.8, 5.5, 2.5]
+                "data": bluetoothInfo['Outside']
                 }
             ],
 
@@ -140,8 +152,8 @@ def getData (userId):
             "dietLabels": ["Carbohydrates", "Vegetable", "Protein", "idk"],
             "dietData": [60, 20, 40, 10],
 
-            "bluetoothPieChartLabels": ["Living Room", "Bedroom", "Bathroom", "Kitchen", "Outside"],
-            "bluetoothPieChartData": [55, 70, 15, 20, 50],
+            "bluetoothPieChartLabels": roomNames,
+            "bluetoothPieChartData": pieData,
 
             "dietAnalysis": "Idk some body of text here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ", # we dont have the actual data yet
     }

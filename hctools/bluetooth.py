@@ -10,7 +10,7 @@ def number_of_days_in_month(year, month):
     #print(year,month)
     return monthrange(year, month)[1]
 
-def locationUpdate(userId, roomName):
+def locationUpdate(userId, roomName, timestamp):
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -19,8 +19,10 @@ def locationUpdate(userId, roomName):
     )
 
     mycursor = mydb.cursor()
-
-    sqlCommand = f"INSERT INTO `roomentrylog` (userId, roomName, timestamp) VALUES ({userId}, '{roomName}', CURRENT_TIMESTAMP)"
+    if timestamp == None:
+        sqlCommand = f"INSERT INTO `roomentrylog` (userId, roomName, timestamp) VALUES ({userId}, '{roomName}', CURRENT_TIMESTAMP)"
+    else:
+        sqlCommand = f"INSERT INTO `roomentrylog` (userId, roomName, timestamp) VALUES ({userId}, '{roomName}', '{timestamp}')"
     mycursor.execute(sqlCommand)
     mydb.commit()
     return {'status': 200}
@@ -121,6 +123,5 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
             index = roomNames.index(room)
             returnValue[index]['times'][d-1] += duration
 
-    pprint(returnValue)
     return returnValue
 
