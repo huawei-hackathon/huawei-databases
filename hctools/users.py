@@ -3,16 +3,16 @@ import bcrypt
 import mysql.connector 
 from password import SQL_PASSWORD
 
-mydb = mysql.connector.connect(
-  host="192.168.0.27",
-  user="root",
-  password=SQL_PASSWORD,
-  database='users'
-)
-
-mycursor = mydb.cursor()
-
 def createElderly(name, age, caregiverUserId):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='users'
+    )
+
+    mycursor = mydb.cursor()
+
     sqlCommand = f"INSERT INTO `elderly` (name, age, caregiverUserId) VALUES ('{name}', {age}, {caregiverUserId})"
     mycursor.execute(sqlCommand)
     mydb.commit()
@@ -21,6 +21,15 @@ def createElderly(name, age, caregiverUserId):
     return {'userId': userId}
 
 def createCaregiver(name, password):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='users'
+    )
+
+    mycursor = mydb.cursor()
+
     hashed = bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt())
     hashed = hashed.decode('utf-8') 
     # Put hashed as string into database
@@ -32,6 +41,15 @@ def createCaregiver(name, password):
     return {'caregiverUserId': caregiverUserId}
 
 def authenticateCaregiver(caregiverUserId, password):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='users'
+    )
+
+    mycursor = mydb.cursor()
+
     sqlCommand = f"\
         SELECT * FROM `caregivers` WHERE caregiverUserId = {caregiverUserId} \
     "
@@ -43,6 +61,15 @@ def authenticateCaregiver(caregiverUserId, password):
     return {'status': result}
 
 def getElderlyProfile(userId):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='users'
+    )
+
+    mycursor = mydb.cursor()
+
     sqlCommand = f"\
         SELECT * FROM `elderly` WHERE userId = {userId} \
     "

@@ -4,14 +4,6 @@ from datetime import datetime
 from calendar import monthrange
 from password import SQL_PASSWORD
 
-mydb = mysql.connector.connect(
-  host="192.168.0.27",
-  user="root",
-  password=SQL_PASSWORD,
-  database='healthData'
-)
-
-mycursor = mydb.cursor()
 
 ''' https://techoverflow.net/2019/05/16/how-to-get-number-of-days-in-month-in-python/ '''
 def number_of_days_in_month(year, month):
@@ -19,6 +11,15 @@ def number_of_days_in_month(year, month):
     return monthrange(year, month)[1]
 
 def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='healthData'
+    )
+
+    mycursor = mydb.cursor()
+    
     healthInfoType = healthInfoType.lower()
     firstDateString = firstDate.strftime("%Y-%m-%d, %H:%M:%S")
     lastDateString = lastDate.strftime("%Y-%m-%d, %H:%M:%S")
@@ -108,6 +109,15 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
     return processedData
 
 def updateHealthInformation(healthInfoType, userId, value):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='healthData'
+    )
+
+    mycursor = mydb.cursor()
+    
     healthInfoType = healthInfoType.lower()
     sqlCommand = f"INSERT INTO `{healthInfoType}` (userId, value, timestamp) VALUES ({userId}, {value}, CURRENT_TIMESTAMP)"
     mycursor.execute(sqlCommand)

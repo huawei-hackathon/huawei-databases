@@ -7,14 +7,6 @@ from io import BytesIO
 from pprint import pprint
 from password import SQL_PASSWORD
 
-mydb = mysql.connector.connect(
-  host="192.168.0.27",
-  user="root",
-  password=SQL_PASSWORD,
-  database='communication'
-)
-
-mycursor = mydb.cursor()
 
 """ FIXED NAMES OF BUCKETS OR DATABSES """
 AUDIO_FILES_BUCKET = 'hackathon-audio-files'
@@ -23,6 +15,13 @@ AUDIO_FILES_BUCKET = 'hackathon-audio-files'
 OBSUTIL_PREFIX = './../obsutil/obsutil'
 
 def sendRequest(command, userId, announcementText):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='communication'
+    )
+    mycursor = mydb.cursor()
     sqlCommand = f"SELECT tunnelUrl FROM `tunnels` WHERE userId = '{userId}'"
     mycursor.execute(sqlCommand)
     result = mycursor.fetchone()
@@ -38,6 +37,13 @@ def sendRequest(command, userId, announcementText):
     return {}
 
 def recordElderlyMessage(userId, audio):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='communication'
+    )
+    mycursor = mydb.cursor()
     ''' INSERT INTO OBS'''
     with open("tmp.mp3", "wb") as audioFile:
         st = base64.b64decode(audio)
@@ -55,6 +61,13 @@ def recordElderlyMessage(userId, audio):
     return sendRequest('announceAudio', userId, '')
 
 def recordCaregiverMessage(userId, audio):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='communication'
+    )
+    mycursor = mydb.cursor()
     ''' INSERT INTO OBS'''
     with open("tmp.mp3", "wb") as audioFile:
         st = base64.b64decode(audio)
@@ -70,7 +83,15 @@ def recordCaregiverMessage(userId, audio):
     mydb.commit()
 
     return sendRequest('announceAudio', userId, '')
+
 def announceMessage(userId, announcementText):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='communication'
+    )
+    mycursor = mydb.cursor()
     ''' INSERT INTO DB '''
     sqlCommand = f"INSERT INTO `announcements` (userId, announcementText, timestamp, author) VALUES ({userId}, '{announcementText}', CURRENT_TIMESTAMP, 'caregiver') "
     mycursor.execute(sqlCommand)
@@ -80,6 +101,14 @@ def announceMessage(userId, announcementText):
     return sendRequest('announceMessage', userId, announcementText)
 
 def announcementEndpointUpdate(userId, tunnelUrl):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='communication'
+    )
+    mycursor = mydb.cursor()
+
     ''' CHECK IF USERID IS ALREADY IN DB ''' 
     sqlCommand = f"SELECT userId FROM `tunnels` WHERE userId = {userId}"
     mycursor.execute(sqlCommand)
@@ -96,6 +125,13 @@ def announcementEndpointUpdate(userId, tunnelUrl):
         return {'status': 200, 'comments': 'Updated Existing Entry'}
 
 def getConversation(userId):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='communication'
+    )
+    mycursor = mydb.cursor()
     sqlCommand = f"SELECT * FROM `announcements` WHERE userId = '{userId}'"
     mycursor.execute(sqlCommand)
     result = mycursor.fetchall()

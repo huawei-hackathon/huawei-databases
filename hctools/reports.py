@@ -8,21 +8,30 @@ from uuid import uuid4
 from pprint import pprint
 from password import SQL_PASSWORD
 
-mydb = mysql.connector.connect(
-  host="192.168.0.27",
-  user="root",
-  password=SQL_PASSWORD,
-  database='reports'
-)
-
-mycursor = mydb.cursor()
-
 def generateReport(uuid, userId):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='reports'
+    )
+
+    mycursor = mydb.cursor()
+
     sqlCommand = f"INSERT INTO `reports` (reportUUID, userId, timestamp) VALUES ('{uuid}', {userId}, CURRENT_TIMESTAMP)"
     mycursor.execute(sqlCommand)
     mydb.commit()
 
 def getReportInfo(uuid):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='reports'
+    )
+
+    mycursor = mydb.cursor()
+
     sqlCommand = f"SELECT userId, timestamp FROM `reports` WHERE reportUUID = '{uuid}'"
     mycursor.execute(sqlCommand)
     value = mycursor.fetchone()
@@ -35,6 +44,15 @@ def getReportInfo(uuid):
         }
 
 def getData (userId):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='reports'
+    )
+
+    mycursor = mydb.cursor()
+
     data = {
             "elderlyName": "John Doe",
             "elderlyAge": "42",
