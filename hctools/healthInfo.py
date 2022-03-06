@@ -104,7 +104,7 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
         if len(values) == 0:
             processedData.append({'y': 0, 'x': i})
         else:
-            processedData.append({'y': int(sum(values)/len(values)), 'x': i})
+            processedData.append({'y': round(int(sum(values)/len(values)),2), 'x': i})
     return processedData
 
 def updateHealthInformation(healthInfoType, userId, value):
