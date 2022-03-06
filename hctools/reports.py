@@ -3,10 +3,24 @@ import requests
 import subprocess
 import mysql.connector 
 from uuid import uuid4
-from io import BytesIO
-from uuid import uuid4
 from pprint import pprint
+from calendar import monthrange
 from password import SQL_PASSWORD
+from datetime import datetime, timedelta, date 
+from dateutil.relativedelta import relativedelta
+from hctools import announcements, food, healthInfo, users
+
+def mean(array):
+    return round(sum(array) / len(array), 2)
+
+def number_of_days_in_month(year, month):
+    return monthrange(year, month)[1]
+
+def sleepTimeHelp(sleepSeconds):
+    sleepMinutes = round(sleepSeconds/60)
+    sleepHours = int(sleepMinutes/60)
+    sleepMinutes -= 60*sleepHours
+    return [sleepHours, sleepMinutes]
 
 def generateReport(uuid, userId):
     mydb = mysql.connector.connect(
@@ -52,19 +66,43 @@ def getData (userId):
     )
 
     mycursor = mydb.cursor()
+    
+    ''' GENERAL DATE INFORMATION ''' 
+    now = datetime.now()
+    lastday = date(now.year, now.month+1, 1) - timedelta(days=1) # TODO:CHANGE IN CASE IT CROSSES A YEAR BOUNDARY
+    firstday = lastday - relativedelta(months=1)
+    daysInMonth = number_of_days_in_month(lastday.year, lastday.month)
+
+    ''' POPULATING DATA '''
+    elderlyInfo = users.getElderlyProfile(userId)
+
+    heartRates = healthInfo.getHealthInformation("heartRate", userId, firstday, lastday, "month")
+    heartRateList = [0] * daysInMonth
+    for i in heartRates: heartRateList[i['x']-1] = i['y']
+
+    steps = healthInfo.getHealthInformation("stepCount", userId, firstday, lastday, "month")
+    stepsList = [0] * daysInMonth
+    for i in steps: stepsList[i['x']-1] = i['y']
+
+    sleepTimes = healthInfo.getHealthInformation("sleepSeconds", userId, firstday, lastday, "month")
+    sleepTimeList = [0] * daysInMonth
+    for i in sleepTimes: sleepTimeList[i['x']-1] = i['y']
+
+    asymmetry = healthInfo.getHealthInformation("stepAsymmetry", userId, firstday, lastday, "month")
+    asymmetryList = [0] * daysInMonth
+    for i in asymmetry: asymmetryList[i['x']-1] = i['y']
 
     data = {
-            "elderlyName": "John Doe",
-            "elderlyAge": "42",
+            "elderlyName": elderlyInfo['name'],
+            "elderlyAge": elderlyInfo['age'],
             "anomalyDetectionText": "John Doe is feeling very sad. He is not feeling well. He seems to be spending many hours in the toilet compared to previous month. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ", # this one just leave something default now since we dont have the model yet
-            "datesOfMonth": [i for i in range(1, 32)],
-            "month": "January",
-            "year": "2022",
-
-            "heartRateList": [97, 109, 104, 107, 94, 98, 96, 93, 101, 109, 98, 90, 106, 99, 91, 97, 104, 90, 99, 103, 90, 110, 97, 94, 94, 101, 91, 106, 107, 95, 103],
-            "stepsList": [6869, 4430, 6471, 3305, 5604, 4196, 4028, 6165, 5460, 3464, 4264, 6391, 7897, 4917, 3962, 5551, 4210, 5009, 6078, 4491, 7890, 3561, 6339, 3470, 6215, 7790, 7030, 7685, 5829, 4742, 4405],
-            "sleepTimeList": [9.3, 8.7, 9.1, 8.9, 9.3, 7.5, 8.4, 9.1, 8.5, 9.4, 9.8, 8.5, 8.4, 10.0, 9.8, 8.0, 9.9, 8.3, 8.8, 7.7, 7.7, 8.1, 8.3, 7.9, 7.7, 9.5, 8.1, 7.5, 8.7, 8.5, 9.8],
-            "asymmetryList": [7.0, 4.0, 5.0, 4.0, 3.0, 7.0, 8.0, 3.0, 3.0, 5.0, 5.0, 6.0, 7.0, 3.0, 8.0, 5.0, 6.0, 8.0, 5.0, 3.0, 6.0, 5.0, 8.0, 7.0, 3.0, 8.0, 5.0, 3.0, 5.0, 6.0, 3.0],
+            "datesOfMonth": [i for i in range(1, daysInMonth+1)],
+            "month": lastday.strftime("%B"),
+            "year": lastday.year,
+            "heartRateList": heartRateList,
+            "stepsList": stepsList,
+            "sleepTimeList": sleepTimeList,
+            "asymmetryList": asymmetryList,
 
             "bluetoothGraphDatasets": [{
                 "label": "Living Room",
@@ -94,10 +132,10 @@ def getData (userId):
                 }
             ],
 
-            "avgSteps": "10,001",
-            "avgHeartRate": "104",
-            "avgSleepTime": ['8', '10'], # [hours, minutes]
-            "avgWalkingAsymmetry": "7.9",
+            "avgSteps": mean(stepsList),
+            "avgHeartRate": mean(heartRateList),
+            "avgSleepTime": sleepTimeHelp(mean(sleepTimeList)),
+            "avgWalkingAsymmetry": mean(asymmetryList),
 
             "dietLabels": ["Carbohydrates", "Vegetable", "Protein", "idk"],
             "dietData": [60, 20, 40, 10],
@@ -110,8 +148,5 @@ def getData (userId):
 
     return data
 
-
 if __name__ == '__main__':
-    id = uuid4()
-    generateReport(id, 15)
-    print(getReportInfo(id))
+    pprint(getData(21))
