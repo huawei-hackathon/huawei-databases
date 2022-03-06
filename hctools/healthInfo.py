@@ -45,7 +45,8 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
     if healthInfoType == 'stepcount':
         ''' STEP COUNT IS SEPARATE DUE TO CUMULATIVE ''' 
         if frequency == 'day':
-            total = max(i[0] for i in result)
+            datapoints = [i[0] for i in result]
+            total = 0 if len(datapoints) == 0 else max(datapoints)
             for i in range(24):
                 data[i] = [int(total/24)]
             leftover = total - 24*int(total/24)
