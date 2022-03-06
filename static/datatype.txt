@@ -1,0 +1,25 @@
+1.	elderlyName
+2.	elderlyAge
+3.	anomalyDetectionText
+4.	datesOfMonth (array of int of len 30/31)
+5.	month (str)
+6.	year (str)
+
+7.	heartRateList - list of average resting heart rate per day (array of int)
+8.	stepsList - list of steps per day (array of int)
+9.	sleepTimeList - list of sleep time per day (array of float in hours)
+10.	asymmetryList - list of walking asymmetry per day (array)
+11.	bluetoothGraphDatasets - list of dictionary of number of minutes in each location per day (array of dictionary with keys of the beacon name and values of the number of minutes)
+
+12.	avgSteps - average steps taken for the whole month (string formatted)
+13.	avgHeartRate - average resting heart rate for the whole month (string)
+14.	avgSleepTime - average sleep time for the whole month (array of string [hours, minutes])
+15.	avgWalkingAsymmetry - average walking asymmetry for the whole month (string:1dp)
+
+16.	dietLabels - array of the food labels (array of strings)
+17.	dietData - array of the number of counts of each food type (array of int)
+
+18.	bluetoothPieChartLabels - list of beacon names (array of strings)
+19.	bluetoothPieChartData - list of number of minutes spent in each location (int)
+
+20.	dietAnalysis - to be implemented - idk what we want 
