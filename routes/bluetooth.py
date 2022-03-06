@@ -1,7 +1,14 @@
 import json
 from flask import request
 from hctools import bluetooth 
+from calendar import monthrange
+from dateutil.relativedelta import relativedelta
 from datetime import datetime, timedelta, date 
+
+''' https://techoverflow.net/2019/05/16/how-to-get-number-of-days-in-month-in-python/ '''
+def number_of_days_in_month(year, month):
+    #print(year,month)
+    return monthrange(year, month)[1]
 
 def locationUpdate():
     obj=request.data.decode("utf-8")
@@ -9,6 +16,8 @@ def locationUpdate():
     obj = json.loads(obj)
     userId = int(obj['userId'])
     roomName = obj['roomName']
+    if roomName not in ['Outside', 'Living Room', 'Bedroom', 'Bathroom', 'Kitchen']:
+        return {"status":300, "error": "Invalid Room Name"}
     return json.dumps(bluetooth.locationUpdate(userId, roomName))
 
 def currentLocation():

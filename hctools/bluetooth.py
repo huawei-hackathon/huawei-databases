@@ -1,8 +1,14 @@
 import base64
 import mysql.connector 
 from pprint import pprint
+from calendar import monthrange
 from password import SQL_PASSWORD
 from datetime import datetime, timedelta, date 
+
+''' https://techoverflow.net/2019/05/16/how-to-get-number-of-days-in-month-in-python/ '''
+def number_of_days_in_month(year, month):
+    #print(year,month)
+    return monthrange(year, month)[1]
 
 def locationUpdate(userId, roomName):
     mydb = mysql.connector.connect(
@@ -83,14 +89,38 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
         data[i].sort(key = lambda x:x['timestamp'])
 
     def durationToMidnight(dateObj):
-        tix = datetime.date(dateObj.year, dateObj.month, dateObj.day)
-        timedelta = dateObj-tix
-        return timedelta.seconds
+        tix = datetime(dateObj.year, dateObj.month, dateObj.day) + timedelta(days=1)
+        td = tix-dateObj
+        return td.seconds//60
 
-    for date in data:
-        if len(data[date]) > 0:
-            data[date][0]['duration'] = durationToMidnight(data[date][0]['timestamp'])
+    for d in data:
+        ''' TAKING THE LAST ENTRY FROM PREVIOUS DAY '''
+        if d-1 in data.keys(): 
+            if len(data[d-1]) > 0:
+                previousRoomName = data[d-1][-1]['roomName']
+                previousTimestamp = data[d-1][-1]['timestamp']
+                timestamp = firstDate + timedelta(days=d-1, seconds=1)
+                data[d].insert(0, {'timestamp': timestamp, 'roomName': previousRoomName})
+        ''' NORMAL ENTRIES '''
+        for x in range(len(data[d])-1):
+            data[d][x]['duration'] = (data[d][x+1]['timestamp'] - data[d][x]['timestamp']).seconds//60
+        ''' LAST REQUEST OF THE DAY '''
+        if len(data[d]) > 0:
+            data[d][-1]['duration'] = durationToMidnight(data[d][-1]['timestamp'])
 
-    pprint(data[6])
+    ''' PROCESS FROM EACH DAY TO MAP TO TOTAL DURATIONS '''
+    roomNames = ['Outside', 'Living Room', 'Bedroom', 'Bathroom', 'Kitchen']
+    returnValue = []
+    for room in roomNames:
+        returnValue.append({'roomName': room, 'times': [0]*len(data)})
 
-    return {"status":200}
+    for d in data:
+        for datapoint in data[d]:
+            room = datapoint['roomName']
+            duration = datapoint['duration']
+            index = roomNames.index(room)
+            returnValue[index]['times'][d-1] += duration
+
+    pprint(returnValue)
+    return returnValue
+

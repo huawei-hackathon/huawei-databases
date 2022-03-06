@@ -4,7 +4,6 @@ from datetime import datetime
 from calendar import monthrange
 from password import SQL_PASSWORD
 
-
 ''' https://techoverflow.net/2019/05/16/how-to-get-number-of-days-in-month-in-python/ '''
 def number_of_days_in_month(year, month):
     #print(year,month)
