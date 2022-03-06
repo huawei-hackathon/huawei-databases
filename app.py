@@ -1,4 +1,4 @@
-from flask import Flask
+from flask import Flask, render_template
 
 from routes import food, users, announcements, healthInfo, reports
 app = Flask(__name__)
@@ -36,5 +36,9 @@ app.add_url_rule('/<healthInfoType>/postData', view_func = healthInfo.updateHeal
 ''' REPORTS '''
 app.add_url_rule('/generateReport', view_func = reports.generateReport, methods = ['POST'])
 app.add_url_rule('/getReport/<reportUUID>', view_func = reports.getReport, methods = ['GET'])
+
+@app.errorhandler(404)
+def page_not_found(e):
+    return render_template('404.html'), 404
 
 app.run(debug=True, port=80, host="0.0.0.0")
