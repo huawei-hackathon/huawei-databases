@@ -1,14 +1,10 @@
 from flask import Flask, render_template
 
-from routes import food, users, announcements, healthInfo, reports
+from routes import food, users, announcements, healthInfo, reports, bluetooth
 app = Flask(__name__)
 
 @app.route("/")
 def hello_world():
-    return "<p>Hello, World!</p>"
-
-@app.route("/testing")
-def testing():
     return "<p>Hello, World!</p>"
 
 ''' FOOD '''
@@ -36,6 +32,11 @@ app.add_url_rule('/<healthInfoType>/postData', view_func = healthInfo.updateHeal
 ''' REPORTS '''
 app.add_url_rule('/generateReport', view_func = reports.generateReport, methods = ['POST'])
 app.add_url_rule('/getReport/<reportUUID>', view_func = reports.getReport, methods = ['GET'])
+
+''' BLUETOOTH '''
+app.add_url_rule('/locationUpdate', view_func = bluetooth.locationUpdate, methods=['POST'])
+app.add_url_rule('/currentLocation', view_func = bluetooth.currentLocation, methods=['POST'])
+app.add_url_rule('/bluetooth/<frequency>', view_func = bluetooth.getBluetoothInformation, methods=['POST'])
 
 @app.errorhandler(404)
 def page_not_found(e):
