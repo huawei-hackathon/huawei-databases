@@ -5,6 +5,7 @@ import mysql.connector
 from uuid import uuid4
 from io import BytesIO
 from pprint import pprint
+import speech_recognition as sr
 from password import SQL_PASSWORD
 
 """ FIXED NAMES OF BUCKETS OR DATABSES """
@@ -12,6 +13,20 @@ AUDIO_FILES_BUCKET = 'hackathon-audio-files'
 
 """ PREFIXES IS FOR RUNNING OF HUAWEI LIBRARY COMMANDS """
 OBSUTIL_PREFIX = './../obsutil/obsutil'
+
+''' https://realpython.com/python-speech-recognition/ '''
+def getAudio(src): 
+    ''' SRC is the path to audio file '''
+    try:
+        r = sr.Recognizer()
+        with sr.AudioFile(src) as source:
+            # listen for the data (load audio to memory)
+            audio_data = r.record(source)
+            # invoke API (convert from speech to text)
+            text = r.recognize_google(audio_data)
+            return text
+    except speech_recognition.UnknownValueError:
+        return ""
 
 def sendRequest(command, userId, announcementText):
     mydb = mysql.connector.connect(
@@ -44,16 +59,17 @@ def recordElderlyMessage(userId, audio):
     )
     mycursor = mydb.cursor()
     ''' INSERT INTO OBS'''
-    with open("tmp.mp3", "wb") as audioFile:
+    with open("tmp.wav", "wb") as audioFile:
         st = base64.b64decode(audio)
         audioFile.write(st)
+        text = getAudio('tmp.wav')
 
     id = uuid4() 
-    cmd =f'{OBSUTIL_PREFIX} cp tmp.mp3 obs://{AUDIO_FILES_BUCKET}/{id}.mp3'
+    cmd =f'{OBSUTIL_PREFIX} cp tmp.wav obs://{AUDIO_FILES_BUCKET}/{id}.wav'
     process = subprocess.run(cmd, shell=True, capture_output=True)
-    obsUrl = f'https://{AUDIO_FILES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{id}.mp3'
+    obsUrl = f'https://{AUDIO_FILES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{id}.wav'
     ''' INSERT INTO DB '''
-    sqlCommand = f"INSERT INTO `announcements` (userId, audioLink, announcementText, author, timestamp) VALUES ({userId}, '{obsUrl}', 'placeholder', 'elderly', CURRENT_TIMESTAMP)"
+    sqlCommand = f"INSERT INTO `announcements` (userId, audioLink, announcementText, author, timestamp) VALUES ({userId}, '{obsUrl}', '{text}', 'elderly', CURRENT_TIMESTAMP)"
     mycursor.execute(sqlCommand)
     mydb.commit()
 
@@ -68,16 +84,17 @@ def recordCaregiverMessage(userId, audio):
     )
     mycursor = mydb.cursor()
     ''' INSERT INTO OBS'''
-    with open("tmp.mp3", "wb") as audioFile:
+    with open("tmp.wav", "wb") as audioFile:
         st = base64.b64decode(audio)
         audioFile.write(st)
+        text = getAudio('tmp.wav')
 
     id = uuid4() 
-    cmd =f'{OBSUTIL_PREFIX} cp tmp.mp3 obs://{AUDIO_FILES_BUCKET}/{id}.mp3'
+    cmd =f'{OBSUTIL_PREFIX} cp tmp.wav obs://{AUDIO_FILES_BUCKET}/{id}.wav'
     process = subprocess.run(cmd, shell=True, capture_output=True)
-    obsUrl = f'https://{AUDIO_FILES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{id}.mp3'
+    obsUrl = f'https://{AUDIO_FILES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{id}.wav'
     ''' INSERT INTO DB '''
-    sqlCommand = f"INSERT INTO `announcements` (userId, audioLink, announcementText, author, timestamp) VALUES ({userId}, '{obsUrl}', 'placeholder', 'caregiver', CURRENT_TIMESTAMP)"
+    sqlCommand = f"INSERT INTO `announcements` (userId, audioLink, announcementText, author, timestamp) VALUES ({userId}, '{obsUrl}', '{text}', 'caregiver', CURRENT_TIMESTAMP)"
     mycursor.execute(sqlCommand)
     mydb.commit()
 
