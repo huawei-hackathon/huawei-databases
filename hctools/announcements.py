@@ -43,10 +43,11 @@ def sendRequest(command, userId, announcementText):
         return {'status': 300, 'error': 'No tunnel URL found!'}
     url = f'{result[0]}/{command}' # Either recorded or announce message
     data = {'text': announcementText}
+    print("ANNOUNCE TUNNEL ", url)
     try:
         response = requests.post(url, json=data)
         return {'status': response.status_code}
-    except:
+    except Exception as e:
         return {'status': 300, 'error': 'Announcement Failed!'}
     return {}
 
