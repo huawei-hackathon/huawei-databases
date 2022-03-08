@@ -44,12 +44,13 @@ def sendRequest(command, userId, announcementText):
     url = f'{result[0]}/{command}' # Either recorded or announce message
     data = {'text': announcementText}
     print("ANNOUNCE TUNNEL ", url)
-    try:
-        response = requests.post(url, json=data)
-        return {'status': response.status_code}
-    except Exception as e:
-        return {'status': 300, 'error': 'Announcement Failed!'}
-    return {}
+    for i in range(10):
+        try:
+            response = requests.post(url, json=data)
+            return {'status': response.status_code}
+        except Exception as e:
+            pass
+    return {'status': 300, 'error': 'Announcement Failed!'}
 
 def recordElderlyMessage(userId, audio):
     mydb = mysql.connector.connect(
