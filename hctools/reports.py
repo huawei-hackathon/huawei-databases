@@ -69,7 +69,8 @@ def getData (userId):
     
     ''' GENERAL DATE INFORMATION ''' 
     now = datetime.now()
-    lastday = date(now.year, now.month+1, 1) - timedelta(days=1) # TODO:CHANGE IN CASE IT CROSSES A YEAR BOUNDARY
+    ''' LAST DAY IS LAST DAY LAST SECOND OF OUR MONTH '''
+    lastday = datetime(now.year, now.month+1, 1) - timedelta(seconds=1) # TODO:CHANGE IN CASE IT CROSSES A YEAR BOUNDARY
     firstday = lastday - relativedelta(months=1)
     daysInMonth = number_of_days_in_month(lastday.year, lastday.month)
 
@@ -93,7 +94,7 @@ def getData (userId):
     for i in asymmetry: asymmetryList[i['x']-1] = i['y']
 
     roomNames = ["Living Room", "Bedroom", "Bathroom", "Kitchen", "Outside"]
-    firstday = lastday + timedelta(days=1)
+    firstday = firstday + timedelta(days=1) 
     bluetoothInfoResult = bluetooth.getBluetoothInformation(userId, firstday, lastday, "month")
     bluetoothInfo = {}
     for i in bluetoothInfoResult:
@@ -102,7 +103,7 @@ def getData (userId):
     pieData = []
     for i in roomNames:
         pieData.append(sum(bluetoothInfo[i]))
-    print(bluetoothInfo)
+    print(pieData)
 
     data = {
             "elderlyName": elderlyInfo['name'],
@@ -157,6 +158,7 @@ def getData (userId):
 
             "dietAnalysis": "Idk some body of text here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ", # we dont have the actual data yet
     }
+    pprint(data['bluetoothPieChartData'])
 
     return data
 

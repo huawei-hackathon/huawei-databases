@@ -49,6 +49,7 @@ def currentLocation(userId):
     return {'roomName':roomName, 'timespent': int(timediff.seconds/60)}
 
 def getBluetoothInformation(userId, firstDate, lastDate, frequency):
+    print(firstDate, lastDate)
 
     mydb = mysql.connector.connect(
         host="192.168.0.27",
