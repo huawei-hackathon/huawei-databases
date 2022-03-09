@@ -104,7 +104,7 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
         if len(values) == 0:
             processedData.append({'y': 0, 'x': i})
         else:
-            processedData.append({'y': round(int(sum(values)/len(values)),2), 'x': i})
+            processedData.append({'y': round(sum(values)/len(values),2), 'x': i})
     return processedData
 
 def updateHealthInformation(healthInfoType, userId, value, timestamp):
@@ -121,7 +121,7 @@ def updateHealthInformation(healthInfoType, userId, value, timestamp):
     if timestamp == None:
         sqlCommand = f"INSERT INTO `{healthInfoType}` (userId, value, timestamp) VALUES ({userId}, {value}, CURRENT_TIMESTAMP)"
     else:
-        sqlCommand = f"INSERT INTO `{healthInfoType}` (userId, value, timestamp) VALUES ({userId}, {value}, 'timestamp')"
+        sqlCommand = f"INSERT INTO `{healthInfoType}` (userId, value, timestamp) VALUES ({userId}, {value}, '{timestamp}')"
 
     mycursor.execute(sqlCommand)
     mydb.commit()

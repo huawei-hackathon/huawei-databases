@@ -208,7 +208,7 @@ var walkingAsymmetryChart = new Chart(walkingAsymmetryHTML, {
           return number_format(tooltipItem.xLabel) + ' '+ Month + ' '+ Year;
         },
         title: function(tooltipItem, chart) {
-          return number_format(tooltipItem[0].yLabel) + '%';
+          return tooltipItem[0].yLabel + '%';
         }
       }
     }

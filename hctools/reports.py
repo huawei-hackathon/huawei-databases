@@ -11,12 +11,13 @@ from dateutil.relativedelta import relativedelta
 from hctools import announcements, food, healthInfo, users, bluetooth
 
 def mean(array):
-    return round(sum(array) / len(array), 2)
+    return round(sum(array) / len(array), 1)
 
 def number_of_days_in_month(year, month):
     return monthrange(year, month)[1]
 
 def sleepTimeHelp(sleepSeconds):
+    sleepSeconds *= 3600
     sleepMinutes = round(sleepSeconds/60)
     sleepHours = int(sleepMinutes/60)
     sleepMinutes -= 60*sleepHours
@@ -88,22 +89,28 @@ def getData (userId):
     sleepTimes = healthInfo.getHealthInformation("sleepSeconds", userId, firstday, lastday, "month")
     sleepTimeList = [0] * daysInMonth
     for i in sleepTimes: sleepTimeList[i['x']-1] = i['y']
+    for i in range(len(sleepTimeList)): 
+        sleepTimeList[i] = round(sleepTimeList[i]/3600, 2)
 
     asymmetry = healthInfo.getHealthInformation("stepAsymmetry", userId, firstday, lastday, "month")
     asymmetryList = [0] * daysInMonth
     for i in asymmetry: asymmetryList[i['x']-1] = i['y']
 
     roomNames = ["Living Room", "Bedroom", "Bathroom", "Kitchen", "Outside"]
-    firstday = firstday + timedelta(days=1) 
     bluetoothInfoResult = bluetooth.getBluetoothInformation(userId, firstday, lastday, "month")
     bluetoothInfo = {}
     for i in bluetoothInfoResult:
         bluetoothInfo[i['roomName']] = i['times']
 
+    print(bluetoothInfo)
+    #for i in bluetoothInfo:
+        #print(i)
+        #print(bluetoothInfo[i][30])
+
     pieData = []
     for i in roomNames:
         pieData.append(sum(bluetoothInfo[i]))
-    print(pieData)
+    #print(pieData)
 
     data = {
             "elderlyName": elderlyInfo['name'],
@@ -124,9 +131,9 @@ def getData (userId):
                 "data": bluetoothInfo['Living Room']
                 }, {
                 "label": "Bedroom",
-                "backgroundColor": "#e74a3b",
-                "hoverBackgroundColor": "#A8362C",
-                "data": bluetoothInfo['Living Room']
+                "backgroundColor": "#1cc88a",
+                "hoverBackgroundColor": "#13875D",
+                "data": bluetoothInfo['Bedroom']
                 }, {
                 "label": "Bathroom",
                 "backgroundColor": "#36b9cc",
@@ -134,8 +141,8 @@ def getData (userId):
                 "data": bluetoothInfo['Bathroom']
                 }, {
                 "label": "Kitchen",
-                "backgroundColor": "#1cc88a",
-                "hoverBackgroundColor": "#13875D",
+                "backgroundColor": "#e74a3b",
+                "hoverBackgroundColor": "#A8362C",
                 "data": bluetoothInfo['Kitchen']
                 }, {
                 "label": "Outside",

@@ -65,7 +65,6 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
     sqlCommand = f"SELECT roomName,timestamp FROM `roomentrylog` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
     mycursor.execute(sqlCommand)
     result = mycursor.fetchall() 
-    pprint(result)
     data = {}
     
     maxValue = 0
@@ -98,12 +97,13 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
 
     for d in data:
         ''' TAKING THE LAST ENTRY FROM PREVIOUS DAY '''
+        previousRoomName = 'Bedroom'
         if d-1 in data.keys(): 
             if len(data[d-1]) > 0:
                 previousRoomName = data[d-1][-1]['roomName']
-                previousTimestamp = data[d-1][-1]['timestamp']
-                timestamp = firstDate + timedelta(days=d-1, seconds=1)
-                data[d].insert(0, {'timestamp': timestamp, 'roomName': previousRoomName})
+        timestamp = firstDate + timedelta(days=d-1, seconds=1)
+        data[d].insert(0, {'timestamp': timestamp, 'roomName': previousRoomName})
+
         ''' NORMAL ENTRIES '''
         for x in range(len(data[d])-1):
             data[d][x]['duration'] = (data[d][x+1]['timestamp'] - data[d][x]['timestamp']).seconds//60
@@ -111,18 +111,22 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
         if len(data[d]) > 0:
             data[d][-1]['duration'] = durationToMidnight(data[d][-1]['timestamp'])
 
+    pprint(data[30])
+
     ''' PROCESS FROM EACH DAY TO MAP TO TOTAL DURATIONS '''
     roomNames = ['Outside', 'Living Room', 'Bedroom', 'Bathroom', 'Kitchen']
     returnValue = []
     for room in roomNames:
         returnValue.append({'roomName': room, 'times': [0]*len(data)})
 
-    for d in data:
+    for d in data: 
+        ''' FOR EACH DAY ''' 
         for datapoint in data[d]:
             room = datapoint['roomName']
             duration = datapoint['duration']
             index = roomNames.index(room)
             returnValue[index]['times'][d-1] += duration
+            if d == 30:
+                print(duration, room)
 
     return returnValue
-

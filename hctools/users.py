@@ -30,7 +30,7 @@ def createCaregiver(name, password, username):
 
     ''' CHECK THAT NO SUCH USERR PRESENT ''' 
     sqlCommand = f"SELECT * FROM `caregivers` WHERE username = '{username}'"
-    print(sqlCommand)
+    #print(sqlCommand)
     mycursor.execute(sqlCommand)
     if mycursor.fetchone() is not None:
         return {'status': 300, 'error': 'Username already taken!'}
