@@ -102,7 +102,7 @@ def getData (userId):
     for i in bluetoothInfoResult:
         bluetoothInfo[i['roomName']] = i['times']
 
-    print(bluetoothInfo)
+    #print(bluetoothInfo)
     #for i in bluetoothInfo:
         #print(i)
         #print(bluetoothInfo[i][30])
@@ -165,7 +165,6 @@ def getData (userId):
 
             "dietAnalysis": "Idk some body of text here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ", # we dont have the actual data yet
     }
-    pprint(data['bluetoothPieChartData'])
 
     return data
 

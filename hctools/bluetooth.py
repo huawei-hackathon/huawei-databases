@@ -111,8 +111,6 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
         if len(data[d]) > 0:
             data[d][-1]['duration'] = durationToMidnight(data[d][-1]['timestamp'])
 
-    pprint(data[30])
-
     ''' PROCESS FROM EACH DAY TO MAP TO TOTAL DURATIONS '''
     roomNames = ['Outside', 'Living Room', 'Bedroom', 'Bathroom', 'Kitchen']
     returnValue = []
@@ -126,7 +124,5 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
             duration = datapoint['duration']
             index = roomNames.index(room)
             returnValue[index]['times'][d-1] += duration
-            if d == 30:
-                print(duration, room)
 
     return returnValue
