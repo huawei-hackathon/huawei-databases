@@ -71,7 +71,6 @@ while initDate < endDate:
         bar.next()
         cooldown = False
 
-    initDate += timedelta(minutes = normal(60, 10**2), seconds = 1)
     ''' GO TOILET '''
     if randrange(1,10) <= 5:
         timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
@@ -79,10 +78,11 @@ while initDate < endDate:
         initDate += timedelta(minutes = randrange(4, 8))
         timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
         bluetooth.locationUpdate(elderlyUserId, ROOM, timestr)
+        initDate += timedelta(minutes = normal(60, 10), seconds = 1)
         continue
 
     ''' SLEEP ''' 
-    if initDate.hour >= 22 or initDate.hour < 6:
+    if initDate.hour >= 22 or initDate.hour < 7:
         if ROOM != 'Bedroom':
             timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
             bluetooth.locationUpdate(elderlyUserId, "Bedroom", timestr)
@@ -95,23 +95,24 @@ while initDate < endDate:
         if randrange(1,12) <= 4:
             timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
             bluetooth.locationUpdate(elderlyUserId, "Outside", timestr)
-            initDate += timedelta(minutes = normal(120, 100), seconds=1)
+            initDate += timedelta(minutes = normal(180, 50), seconds=1)
             timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
             bluetooth.locationUpdate(elderlyUserId, "Living Room", timestr)
             ROOM = "Living Room"
             cooldown = True
+            initDate += timedelta(minutes = normal(60, 10), seconds = 1)
             continue
 
     ''' RANDOM ROOM CHANGE '''
     if randrange(1,8) <= 7:
-        rooms = ['Living Room', 'Living Room', 'Living Room', 'Kitchen', 'Kitchen', 'Bedroom', 'Kitchen']
+        rooms = ['Living Room'] * 10 + ['Kitchen'] * 10 + ['Bedroom']
         ''' REDUCE CHANCE OF GOING TO BEDROOM '''
         rooms = [i for i in rooms if i != ROOM]
-        #print(rooms)
         target = choice(rooms)
         timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
         bluetooth.locationUpdate(elderlyUserId, target, timestr)
         ROOM = target
+        initDate += timedelta(minutes = normal(60, 10), seconds = 1)
 
 print()
 print("BLUETOOTH ROOM DATA COMPLETE")
