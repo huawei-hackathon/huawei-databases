@@ -100,17 +100,14 @@ def getData (userId):
     bluetoothInfoResult = bluetooth.getBluetoothInformation(userId, firstday, lastday, "month")
     bluetoothInfo = {}
     for i in bluetoothInfoResult:
-        bluetoothInfo[i['roomName']] = i['times']
-
-    #print(bluetoothInfo)
-    #for i in bluetoothInfo:
-        #print(i)
-        #print(bluetoothInfo[i][30])
+        bluetoothInfo[i['roomName']] = [round(x/60, 2) for x in i['times']]
 
     pieData = []
     for i in roomNames:
         pieData.append(sum(bluetoothInfo[i]))
-    #print(pieData)
+        pieData[-1] = round(pieData[-1], 0)
+    percentages = [round(i/sum(pieData), 1) for i in pieData]
+    pieDataWithText = [f"{pieData[i]} ({percentages[i]}%)" for i in range(len(pieData))]
 
     data = {
             "elderlyName": elderlyInfo['name'],
