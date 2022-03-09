@@ -49,6 +49,7 @@ def sendRequest(command, userId, announcementText):
             response = requests.post(url, json=data)
             return {'status': response.status_code}
         except Exception as e:
+            print(e)
             pass
     return {'status': 300, 'error': 'Announcement Failed!'}
 

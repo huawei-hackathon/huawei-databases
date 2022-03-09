@@ -13,7 +13,8 @@ app.add_url_rule('/food/date', view_func=food.queryFoodImages, methods=['POST'])
 app.add_url_rule('/food/lastMeal', view_func=food.queryLastMeal, methods=['POST'])
 
 ''' USERS ''' 
-app.add_url_rule('/users/getProfile', view_func = users.getProfile, methods=['POST'])
+app.add_url_rule('/users/getElderlyProfile', view_func = users.getElderlyProfile, methods=['POST'])
+app.add_url_rule('/users/getCaregiverProfile', view_func = users.getCaregiverProfile, methods=['POST'])
 app.add_url_rule('/users/createElderly', view_func = users.createElderly, methods=['POST'])
 app.add_url_rule('/users/createCaregiver', view_func = users.createCaregiver, methods=['POST'])
 app.add_url_rule('/users/authenticateCaregiver', view_func = users.authenticateCaregiver, methods=['POST'])
