@@ -101,17 +101,26 @@ def getCaregiverProfile(username):
     )
     mycursor = mydb.cursor()
 
+    ''' GET CAREGIVER INFORMATION ''' 
     sqlCommand = f"SELECT * FROM `caregivers` WHERE username = '{username}' "
     mycursor.execute(sqlCommand)
     result = mycursor.fetchone()
+    
     if result == None:
         return {}
     else:
-        return {
+        sqlCommand = f"SELECT * FROM `elderly` WHERE caregiverUserId = {result[0]}"
+        mycursor.execute(sqlCommand)
+        elderly = mycursor.fetchone()
+        res = {
             'caregiverUserId': result[0],
             'name': result[1],
-            'username': result[3]
+            'username': result[3],
+            'elderlyInfo': {}
         }
+        if elderly is not None:
+            res['elderlyInfo'] = getElderlyProfile(elderly[0])
+        return res
 
 if __name__ == '__main__':
     #id = createCaregiver('daren', 'testing')['caregiverUserId']
