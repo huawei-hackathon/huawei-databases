@@ -33,3 +33,6 @@ def getReport(reportUUID):
     data = reports.getData(userId)
 
     return render_template('index.html', data=data)
+
+def mockReport():
+

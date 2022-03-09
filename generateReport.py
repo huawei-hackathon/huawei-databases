@@ -10,13 +10,14 @@ def randrange(low, high):
     tx = rand()
     return low + tx * (high-low)
 
-''' CREATE CAREGIVER '''
-caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', f'demo {uuid4()}')['caregiverUserId']
-print(f"caregiverUserId: {caregiverUserId}")
+def generateReport():
+    ''' CREATE CAREGIVER '''
+    caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', f'demo {uuid4()}')['caregiverUserId']
+    print(f"caregiverUserId: {caregiverUserId}")
 
-''' CREATE ELDERLY '''
-elderlyUserId = users.createElderly('Demonstration Elderly', 78, caregiverUserId, 170, 65, 22.49, 'male')['userId']
-print(f"elderlyUserId: {elderlyUserId}")
+    ''' CREATE ELDERLY '''
+    elderlyUserId = users.createElderly('Demonstration Elderly', 78, caregiverUserId, 170, 65, 22.49, 'male')['userId']
+    print(f"elderlyUserId: {elderlyUserId}")
 
 ''' REPORT '''
 reportUUID = uuid4()
