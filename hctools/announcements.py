@@ -28,7 +28,7 @@ def getAudio(src):
     except speech_recognition.UnknownValueError:
         return ""
 
-def sendRequest(command, userId, announcementText):
+def sendRequest(command, userId, data):
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -42,8 +42,6 @@ def sendRequest(command, userId, announcementText):
     if result == None:
         return {'status': 300, 'error': 'No tunnel URL found!'}
     url = f'{result[0]}/{command}' # Either recorded or announce message
-    data = {'text': announcementText}
-    print("ANNOUNCE TUNNEL ", url)
     for i in range(10):
         try:
             response = requests.post(url, json=data)
@@ -76,7 +74,7 @@ def recordElderlyMessage(userId, audio):
     mycursor.execute(sqlCommand)
     mydb.commit()
 
-    return sendRequest('announceAudio', userId, '')
+    return {'status': 200}
 
 def recordCaregiverMessage(userId, audio):
     mydb = mysql.connector.connect(
@@ -101,7 +99,7 @@ def recordCaregiverMessage(userId, audio):
     mycursor.execute(sqlCommand)
     mydb.commit()
 
-    return sendRequest('announceAudio', userId, '')
+    return sendRequest('announceAudio', userId, {'URL': obsUrl})
 
 def announceMessage(userId, announcementText):
     mydb = mysql.connector.connect(
@@ -117,7 +115,7 @@ def announceMessage(userId, announcementText):
     mydb.commit()
 
     ''' SENDING REQUEST ''' 
-    return sendRequest('announceMessage', userId, announcementText)
+    return sendRequest('announceMessage', userId, {'text': announcementText})
 
 def announcementEndpointUpdate(userId, tunnelUrl):
     mydb = mysql.connector.connect(
