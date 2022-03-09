@@ -3,6 +3,7 @@ from uuid import uuid4
 from flask import request, render_template
 from hctools import reports
 from datetime import datetime
+import mockReport
 
 def generateReport():
     obj=request.data.decode("utf-8")
@@ -25,14 +26,13 @@ def getReport(reportUUID):
     userId = reportInfo['userId']
     difference = now - timestamp
     timeSeconds = difference.total_seconds()
-    print(timeSeconds)
     if timeSeconds > 3600:
         return render_template('report-not-found.html', error = 'Report Expired')
-
 
     data = reports.getData(userId)
 
     return render_template('index.html', data=data)
 
-def mockReport():
+def getMockReport():
+    return json.dumps(mockReport.generateReport())
 

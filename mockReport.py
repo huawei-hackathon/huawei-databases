@@ -117,8 +117,9 @@ def generateReport():
 
     print()
     print("BLUETOOTH ROOM DATA COMPLETE")
+    
     return {
-        'caregiverUserId': caregiverUserId
-        'elderlyUserId': elderlyUserId
+        'caregiverUserId': caregiverUserId,
+        'elderlyUserId': elderlyUserId,
         'url': f'http://119.13.104.214:80/getReport/{reportUUID}'
     }

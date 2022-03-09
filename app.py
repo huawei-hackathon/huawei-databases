@@ -33,7 +33,7 @@ app.add_url_rule('/<healthInfoType>/postData', view_func = healthInfo.updateHeal
 ''' REPORTS '''
 app.add_url_rule('/generateReport', view_func = reports.generateReport, methods = ['POST'])
 app.add_url_rule('/getReport/<reportUUID>', view_func = reports.getReport, methods = ['GET'])
-app.add_url_rule('/mockReport', view_func = reports.mockReport, methods=['GET'])
+app.add_url_rule('/mockReport', view_func = reports.getMockReport, methods=['GET'])
 
 ''' BLUETOOTH '''
 app.add_url_rule('/locationUpdate', view_func = bluetooth.locationUpdate, methods=['POST'])
