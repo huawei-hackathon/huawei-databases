@@ -18,6 +18,9 @@ var roomTimePieChart = new Chart(roomTimePieChartHTML, {
   options: {
     maintainAspectRatio: false,
     tooltips: {
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: 14,
       backgroundColor: "rgb(255,255,255)",
       bodyFontColor: "#858796",
       borderColor: '#dddfeb',
@@ -25,7 +28,27 @@ var roomTimePieChart = new Chart(roomTimePieChartHTML, {
       xPadding: 15,
       yPadding: 15,
       displayColors: false,
-      caretPadding: 10
+      caretPadding: 10,
+      callbacks : {
+
+        title: function(tooltipItem, data) {
+          let dataset = data['datasets'][0];
+          let name = data['labels'][tooltipItem[0]['index']];
+          
+          let numArray = dataset.data;
+          let index = tooltipItem[0]['index'];
+
+          let total = numArray.reduce((a, b) => a + b, 0);
+          let hour = numArray[index];
+
+          return name + ": " + Math.floor(hour / total * 100) + '%';
+        },
+
+        label: function(tooltipItem, data) {
+          let hours = data['datasets'][0]['data'][tooltipItem['index']];
+          return hours   + ' Hours';
+        },
+      }
     },
     legend: {
       display: true
@@ -50,6 +73,9 @@ var dietPieChart = new Chart(dietPieChartHTML, {
   options: {
     maintainAspectRatio: false,
     tooltips: {
+      titleMarginBottom: 10,
+      titleFontColor: '#6e707e',
+      titleFontSize: 14,
       backgroundColor: "rgb(255,255,255)",
       bodyFontColor: "#858796",
       borderColor: '#dddfeb',
@@ -57,7 +83,27 @@ var dietPieChart = new Chart(dietPieChartHTML, {
       xPadding: 15,
       yPadding: 15,
       displayColors: false,
-      caretPadding: 10
+      caretPadding: 10,
+      callbacks : {
+
+        title: function(tooltipItem, data) {
+          let dataset = data['datasets'][0];
+          let name = data['labels'][tooltipItem[0]['index']];
+          
+          let numArray = dataset.data;
+          let index = tooltipItem[0]['index'];
+
+          let total = numArray.reduce((a, b) => a + b, 0);
+          let hour = numArray[index];
+
+          return name + ": " + Math.floor(hour / total * 100) + '%';
+        },
+
+        label: function(tooltipItem, data) {
+          let hours = data['datasets'][0]['data'][tooltipItem['index']];
+          return hours   + ' Meals';
+        },
+      }
     },
     legend: {
       display: true
