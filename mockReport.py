@@ -117,9 +117,43 @@ def generateReport():
 
     print()
     print("BLUETOOTH ROOM DATA COMPLETE")
+
+    print("GENERATING CONVERSATION DATA")
+    initDate = datetime(now.year, now.month, 1, 0, 0, 0)
+    endDate = datetime(now.year, now.month, 1, 0, 0, 0) + relativedelta(months = 1) - timedelta (seconds=1)
+
+    bar = Bar("Processing...", max=31)
+    day = 1
+    while initDate < endDate:
+        elderlyMessages = 1
+        x = normal(1,0.25)
+        if x > 1.25: elderlyMessages = 2
+        if x < 0.75: elderlyMessages = 0
+
+        caregiverMessages = 1
+        initDate = initDate + timedelta(hours = 8)
+        left = 16
+
+        for i in range(elderlyMessages):
+            announcements.mockElderlyMessage(elderlyUserId, initDate.strftime("%Y-%m-%d %H:%M:%S"), normal(0.7, 0.1))
+            initDate = initDate + timedelta(hours = 3)
+            left -= 3
+
+        for i in range(caregiverMessages):
+            announcements.mockCaregiverMessage(elderlyUserId, initDate.strftime("%Y-%m-%d %H:%M:%S"))
+            initDate = initDate + timedelta(hours = 3)
+            left -= 3
+
+        ''' UPDATE DATE AND PROGRESS BAR'''
+        initDate = initDate + timedelta(hours=left)
+        day += 1
+        bar.next()
     
     return {
         'caregiverUserId': caregiverUserId,
         'elderlyUserId': elderlyUserId,
         'url': f'http://119.13.104.214:80/getReport/{reportUUID}'
     }
+
+if __name__ == '__main__':
+    print(generateReport())
