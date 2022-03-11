@@ -1,12 +1,13 @@
 import base64
 import requests
+import sentiment
 import subprocess
 import mysql.connector 
 from uuid import uuid4
 from io import BytesIO
 from pprint import pprint
 import speech_recognition as sr
-from password import SQL_PASSWORD
+from password import SQL_PASSWORD, ASSEMBLYAI_API_KEY
 
 """ FIXED NAMES OF BUCKETS OR DATABSES """
 AUDIO_FILES_BUCKET = 'hackathon-audio-files'
@@ -64,13 +65,17 @@ def recordElderlyMessage(userId, audio):
         st = base64.b64decode(audio)
         audioFile.write(st)
         text = getAudio('tmp.wav')
+        text = text.replace("'", "")
+
+    ''' SENTIMENT ANALYSIS '''
+    positivity = sentiment.sentimentAnalysis(text)
 
     id = uuid4() 
     cmd =f'{OBSUTIL_PREFIX} cp tmp.wav obs://{AUDIO_FILES_BUCKET}/{id}.wav'
     process = subprocess.run(cmd, shell=True, capture_output=True)
     obsUrl = f'https://{AUDIO_FILES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{id}.wav'
     ''' INSERT INTO DB '''
-    sqlCommand = f"INSERT INTO `announcements` (userId, audioLink, announcementText, author, timestamp) VALUES ({userId}, '{obsUrl}', '{text}', 'elderly', CURRENT_TIMESTAMP)"
+    sqlCommand = f"INSERT INTO `announcements` (userId, audioLink, announcementText, author, timestamp, sentiment) VALUES ({userId}, '{obsUrl}', '{text}', 'elderly', CURRENT_TIMESTAMP, {positivity})"
     mycursor.execute(sqlCommand)
     mydb.commit()
 
