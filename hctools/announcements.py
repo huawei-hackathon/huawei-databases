@@ -178,6 +178,7 @@ def analyseConversation(userId, firstDate, lastDate):
     firstDateString = firstDate.strftime("%Y-%m-%d, %H:%M:%S")
     lastDateString = lastDate.strftime("%Y-%m-%d, %H:%M:%S")
     sqlCommand = f"SELECT sentiment,author FROM `announcements` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
+    print(sqlCommand)
     mycursor.execute(sqlCommand)
     result = mycursor.fetchall()
 
@@ -205,7 +206,8 @@ def mockElderlyMessage(userId, timestamp, sentiment):
     )
     mycursor = mydb.cursor()
 
-    sqlCommand = f"INSERT INTO `announcements` (userId, author, timestamp, sentiment) VALUES ({userId},'elderly', timestamp, {sentiment})"
+    sqlCommand = f"INSERT INTO `announcements` (userId, author, timestamp, sentiment) VALUES ({userId},'elderly', '{timestamp}', {sentiment})"
+    print(sqlCommand)
     mycursor.execute(sqlCommand)
     mydb.commit()
 
@@ -218,10 +220,9 @@ def mockCaregiverMessage(userId, timestamp):
     )
     mycursor = mydb.cursor()
 
-    sqlCommand = f"INSERT INTO `announcements` (userId, author, timestamp) VALUES ({userId}, 'elderly', timestamp) "
+    sqlCommand = f"INSERT INTO `announcements` (userId, author, timestamp) VALUES ({userId}, 'caregiver', '{timestamp}') "
     mycursor.execute(sqlCommand)
     mydb.commit()
-
 
 if __name__ == '__main__':
     #announcementEndpointUpdate(11, 'https://tidy-insect-49.loca.lt/') 

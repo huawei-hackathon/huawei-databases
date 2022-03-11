@@ -145,7 +145,7 @@ def getData (userId):
         if elderlyMessages >= 2* caregiverMessages:
             sentimentText += f"{name} enjoys frequently contacting his caregiver, sending him {elderlyMessages} messages over the course of the month. His messages are often joyus with a mean sentiment value of {meanSentiment}, implying that he is in a good mood! "
         else:
-            sentimentText += f"{name} enjoys a healthy relationship with his caregiver, in total exchanging {caregiverMessages + elderlyMessages} over the course of month. His messages are often joyus with a mean sentiment value of {meanSentiment}, implying that he is in a good mood! "
+            sentimentText += f"{name} enjoys a healthy relationship with his caregiver, in total exchanging {caregiverMessages + elderlyMessages} messages over the course of month. His messages are often joyus with a mean sentiment value of {meanSentiment}, implying that he is in a good mood! "
             
     displayText += sentimentText
 
