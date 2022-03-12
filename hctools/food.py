@@ -1,8 +1,11 @@
 import base64
 import subprocess
+import mysql.connector 
 from uuid import uuid4
 from pprint import pprint
+from password import SQL_PASSWORD
 from datetime import datetime, timedelta
+from foodAI import getFoodGroups
 
 """ FIXED NAMES OF BUCKETS OR DATABSES """
 FOOD_IMAGES_BUCKET = 'hackathon-food-images'
@@ -11,11 +14,36 @@ FOOD_IMAGES_BUCKET = 'hackathon-food-images'
 OBSUTIL_PREFIX = './../obsutil/obsutil'
 
 def uploadFoodObject(imagePath, userId): # Uploads a specific food item
-    time = datetime.now().strftime("%Y-%m-%d/%X")
-    print(time)
-    cmd = f'{OBSUTIL_PREFIX} cp {imagePath} obs://{FOOD_IMAGES_BUCKET}/{userId}/{time}.jpeg'
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='food'
+    )
+
+    mycursor = mydb.cursor()
+    
+    ''' UPLOAD IMAGINE TO OBS ''' 
+    imgUUID = uuid4()
+    cmd = f'{OBSUTIL_PREFIX} cp {imagePath} obs://{FOOD_IMAGES_BUCKET}/{imgUUID}.jpg'
     process = subprocess.run(cmd, shell=True, capture_output=True)
-    return process
+    imgLink = f"https://{FOOD_IMAGES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{imgUUID}.jpeg"
+
+    sqlCommand = f"INSERT INTO `meals` (userId, timestamp, imgLink) VALUES ({userId}, CURRENT_TIMESTAMP, '{imgLink}')"
+    mycursor.execute(sqlCommand)
+    mydb.commit()
+
+    mycursor.execute("SELECT LAST_INSERT_ID()")
+    imgId = mycursor.fetchone()[0]
+
+    foodGroups = getFoodGroups(imagePath)
+    print(foodGroups)
+    for food in foodGroups:
+        sqlCommand = f"INSERT INTO `foodgroups` (imgId, foodType, foodGroup, confidence) VALUES ({imgId}, '{food['foodType']}', '{food['foodGroup']}', {food['confidence']}"
+        mycursor.execute(sqlCommand)
+        mydb.commit()
+
+    return 0
 
 def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
     cmd = f'{OBSUTIL_PREFIX} ls obs://{FOOD_IMAGES_BUCKET}/{userId}/{date}/ -s'

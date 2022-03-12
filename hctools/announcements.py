@@ -7,7 +7,7 @@ from uuid import uuid4
 from io import BytesIO
 from pprint import pprint
 import speech_recognition as sr
-from password import SQL_PASSWORD, ASSEMBLYAI_API_KEY
+from password import SQL_PASSWORD
 
 """ FIXED NAMES OF BUCKETS OR DATABSES """
 AUDIO_FILES_BUCKET = 'hackathon-audio-files'

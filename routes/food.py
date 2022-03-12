@@ -1,7 +1,9 @@
 import json
 import base64
+import subprocess
 from PIL import Image
 from io import BytesIO
+from uuid import uuid4
 from flask import request
 from hctools import food
 
@@ -12,9 +14,11 @@ def uploadFoodImage():
     userId = int(obj['userId'])
     image = obj['image']
     image = Image.open(BytesIO(base64.b64decode(image)))
-    image.save('tmp.png', 'png')
-    food.uploadFoodObject('tmp.png', userId)
-    return json.dumps("200")
+    imagePath = f'tmp/{uuid4()}.jpg'
+    image.save(imagePath, 'png')
+    food.uploadFoodObject(imagePath, userId)
+    #subprocess.run(f"rm {imagePath}", shell=True)
+    return json.dumps({'status':200})
 
 def queryFoodImages():
     obj=request.data.decode("utf-8")
