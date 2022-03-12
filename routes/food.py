@@ -55,7 +55,7 @@ def addFood():
 
     if foodGroup not in ['dairy', 'dessert', 'fruit', 'grain', 'protein', 'vegetables']:
         return json.dumps({'status': 300, 'error': 'Invalid Food Group!'})
-    return json.dumps(food.updateFoodGroup(mealId, foodName, foodGroup))
+    return json.dumps(food.addFoodGroup(mealId, foodName, foodGroup))
 
 def deleteEntry():
     obj=request.data.decode("utf-8")
@@ -63,4 +63,4 @@ def deleteEntry():
     obj = json.loads(obj)
     foodId = int(obj['foodId'])
 
-    return json.dumps(food.deleteEntry(mealId, foodName, foodGroup))
+    return json.dumps(food.deleteEntry(foodId))

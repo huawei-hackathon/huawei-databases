@@ -80,7 +80,7 @@ def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
             output.append({
                 'mealId': result[0],
                 'userId': result[1],
-                'timestamp': result[2].strftime("%Y-%M-%d %X"),
+                'timestamp': result[2].strftime("%Y-%m-%d %X"),
                 'imgUrl': result[3],
                 'food': [{
                     'foodId': result[4],
@@ -114,7 +114,7 @@ def getLastMeal(userId):
     return {
         'mealId': result[0],
         'userId': result[1],
-        'timestamp': result[2].strftime("%Y-%M-%d %X"),
+        'timestamp': result[2].strftime("%Y-%m-%d %X"),
         'imgUrl': result[3],
         'food': [{
             'foodId': i[0],
@@ -126,18 +126,42 @@ def getLastMeal(userId):
 
 
 def updateFoodGroup(foodId, foodGroup):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='food'
+    )
+
+    mycursor = mydb.cursor()
     sqlCommand = f"UPDATE `foodgroups` SET foodGroup = '{foodGroup}' WHERE foodId = {foodId}"
     mycursor.execute(sqlCommand)
     mydb.commit()
     return {'status':200}
 
 def addFoodGroup(mealId, foodName, foodGroup):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='food'
+    )
+
+    mycursor = mydb.cursor()
     sqlCommand = f"INSERT INTO `foodgroups` (mealId, foodName, foodGroup) VALUES ({mealId}, foodName, foodGroup)"
     mycursor.execute(sqlCommand)
     mydb.commit()
     return {'status':200}
 
-def deleteFoodGroup(foodId):
+def deleteEntry(foodId):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='food'
+    )
+
+    mycursor = mydb.cursor()
     sqlCommand = f"DELETE FROM `foodgroups` WHERE foodId = {foodId}"
     mycursor.execute(sqlCommand)
     mydb.commit()
