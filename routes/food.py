@@ -6,6 +6,7 @@ from io import BytesIO
 from uuid import uuid4
 from flask import request
 from hctools import food
+from datetime import datetime
 
 def uploadFoodImage():
     obj=request.data.decode("utf-8")
@@ -25,7 +26,7 @@ def queryFoodImages():
     obj = obj.replace("'", '"') # Replace ' with " for json decoding
     obj = json.loads(obj)
     userId = int(obj['userId'])
-    date = obj['date']
+    date = datetime.strptime(obj['date'], "%Y-%m-%d")
     return json.dumps(food.getFoodObjectsByDate(userId, date))
 
 def queryLastMeal():

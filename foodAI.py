@@ -6,7 +6,6 @@ from password import FOODAI_API_KEY
 def getFoodGroups(img):
     api_user_token = FOODAI_API_KEY
     headers = {'Authorization': 'Bearer ' + api_user_token}
-    print(headers)
 
     # Detect stuff in image
     url = 'https://api.logmeal.es/v2/image/recognition/complete/v1.0'
@@ -28,7 +27,6 @@ def getFoodGroups(img):
     foodContents = []
 
     for detectedFood in resJson['recognition_results']:
-        print(detectedFood['id'], detectedFood['name'])
         obj = {'foodType': detectedFood['name'], 'confidence': detectedFood['prob']}
 
         foodGroup = 'labelNotFound'
@@ -46,7 +44,6 @@ def getFoodGroups(img):
             if obj['foodType'] in foodGroupMapping[category]: foodGroup = category
 
         obj['foodGroup'] = foodGroup
-        print(obj)
 
         foodContents.append(obj)
 
