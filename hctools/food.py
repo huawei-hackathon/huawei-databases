@@ -27,7 +27,8 @@ def uploadFoodObject(imagePath, userId): # Uploads a specific food item
 
     if foodGroups == []:
         ''' IF NO FOOD DETECTED ''' 
-        return {'status': 300, 'error': 'No Food Found!'}
+        subprocess.run(f"rm {imagePath}", shell=True)
+        return {'status': 200, 'foodFound': False}
     
     ''' UPLOAD IMAGE TO OBS ''' 
     imgUUID = uuid4()
@@ -47,7 +48,8 @@ def uploadFoodObject(imagePath, userId): # Uploads a specific food item
         mycursor.execute(sqlCommand)
         mydb.commit()
 
-    return 0
+    subprocess.run(f"rm {imagePath}", shell=True)
+    return {'stauts': 200, 'foodFound': True}
 
 def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
     mydb = mysql.connector.connect(
@@ -86,7 +88,7 @@ def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
                     'confidence': result[8]
                 }]
             })
-    return []
+    return output
 
 def getLastMeal(userId):
     mydb = mysql.connector.connect(

@@ -17,8 +17,7 @@ def uploadFoodImage():
     image = Image.open(BytesIO(base64.b64decode(image)))
     imagePath = f'tmp/{uuid4()}.jpg'
     image.save(imagePath, 'png')
-    food.uploadFoodObject(imagePath, userId)
-    #subprocess.run(f"rm {imagePath}", shell=True)
+    return json.dumps(food.uploadFoodObject(imagePath, userId))
     return json.dumps({'status':200})
 
 def queryFoodImages():
