@@ -11,6 +11,7 @@ def hello_world():
 app.add_url_rule('/food/upload', view_func=food.uploadFoodImage, methods=['POST'])
 app.add_url_rule('/food/date', view_func=food.queryFoodImages, methods=['POST'])
 app.add_url_rule('/food/lastMeal', view_func=food.queryLastMeal, methods=['POST'])
+app.add_url_rule('/food/updateFoodGroup', view_func = food.updateFoodGroup, methods=['POST'])
 
 ''' USERS ''' 
 app.add_url_rule('/users/getElderlyProfile', view_func = users.getElderlyProfile, methods=['POST'])
