@@ -56,16 +56,32 @@ def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
     startTime = datetime(date.year, date.month, date.day, 0,0,0)
     endTime = datetime(date.year, date.month, date.day, 23, 59, 59)
     
-    sqlCommand = f"SELECT * FROM `meals` WHERE userId = {userId} AND timestamp BETWEEN '{startTime}' AND '{endTime}' ORDER BY timestamp DESC"
+    sqlCommand = f"SELECT * FROM `meals` RIGHT JOIN `foodgroups` ON meals.imgId = foodgroups.imgId WHERE userId = {userId} AND timestamp BETWEEN '{startTime}' AND '{endTime}' ORDER BY timestamp DESC"
     mycursor.execute(sqlCommand)
     results = mycursor.fetchall()
+    output = []
 
-    return [{
-        'mealId': result[0],
-        'userId': result[1],
-        'timestamp': result[2].strftime("%Y-%M-%d %X"),
-        'imgUrl': result[3]
-    } for result in results]
+    for result in results:
+        if len(output) > 0 and output[-1]['mealId'] == result[0]:
+            ''' combine '''
+            output[-1]['food'].append({
+                'foodName': result[6],
+                'foodGroup': result[7],
+                'confidence': result[8]
+            })
+        else:
+            output.append({
+                'mealId': result[0],
+                'userId': result[1],
+                'timestamp': result[2].strftime("%Y-%M-%d %X"),
+                'imgUrl': result[3],
+                'food': [{
+                    'foodName': result[6],
+                    'foodGroup': result[7],
+                    'confidence': result[8]
+                }]
+            })
+    return []
 
 def getLastMeal(userId):
     mydb = mysql.connector.connect(
@@ -75,21 +91,45 @@ def getLastMeal(userId):
         database='food'
     )
 
-    mycursor = mydb.cursor()
+    mycursor = mydb.cursor(buffered=True)
     
     sqlCommand = f'SELECT * FROM `meals` WHERE userId = {userId} ORDER BY timestamp DESC'
     mycursor.execute(sqlCommand)
     result = mycursor.fetchone()
 
+    mycursor = mydb.cursor()
+    sqlCommand = f"SELECT * FROM `foodgroups` WHERE imgId = {result[0]}"
+    mycursor.execute(sqlCommand)
+    foodgroups = mycursor.fetchall()
+    print(foodgroups)
+
     return {
         'mealId': result[0],
         'userId': result[1],
         'timestamp': result[2].strftime("%Y-%M-%d %X"),
-        'imgUrl': result[3]
+        'imgUrl': result[3],
+        'food': [{
+            'foodName': i[2],
+            'foodGroup': i[3],
+            'confidence': i[4]
+            } for i in foodgroups]
     }
+
 
 def updateFoodGroup(foodId, foodGroup):
     sqlCommand = f"UPDATE `foodgroups` SET foodGroup = '{foodGroup}' WHERE foodId = {foodId}"
+    mycursor.execute(sqlCommand)
+    mydb.commit()
+    return {'status':200}
+
+def addFoodGroup(mealId, foodName, foodGroup):
+    sqlCommand = f"INSERT INTO `foodgroups` (mealId, foodName, foodGroup) VALUES ({mealId}, foodName, foodGroup)"
+    mycursor.execute(sqlCommand)
+    mydb.commit()
+    return {'status':200}
+
+def deleteFoodGroup(foodId):
+    sqlCommand = f"DELETE FROM `foodgroups` WHERE foodId = {foodId}"
     mycursor.execute(sqlCommand)
     mydb.commit()
     return {'status':200}

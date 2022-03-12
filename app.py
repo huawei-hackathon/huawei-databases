@@ -12,6 +12,8 @@ app.add_url_rule('/food/upload', view_func=food.uploadFoodImage, methods=['POST'
 app.add_url_rule('/food/date', view_func=food.queryFoodImages, methods=['POST'])
 app.add_url_rule('/food/lastMeal', view_func=food.queryLastMeal, methods=['POST'])
 app.add_url_rule('/food/updateFoodGroup', view_func = food.updateFoodGroup, methods=['POST'])
+app.add_url_rule('/food/addFood', view_func = food.addFood, methods=['POST'])
+app.add_url_rule('/food/deleteEntry', view_func = food.deleteEntry, methods=['POST'])
 
 ''' USERS ''' 
 app.add_url_rule('/users/getElderlyProfile', view_func = users.getElderlyProfile, methods=['POST'])
@@ -36,7 +38,7 @@ app.add_url_rule('/generateReport', view_func = reports.generateReport, methods 
 app.add_url_rule('/getReport/<reportUUID>', view_func = reports.getReport, methods = ['GET'])
 app.add_url_rule('/mockReport', view_func = reports.getMockReport, methods=['GET'])
 
-@app.route('/customizeReport', methods=['GET', POST])
+@app.route('/customizeReport', methods=['GET', 'POST'])
 def customizeReport():
     if request.method == 'GET':
         return render_template('customizeReport.html')
