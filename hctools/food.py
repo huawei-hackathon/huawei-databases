@@ -83,6 +83,7 @@ def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
                 'timestamp': result[2].strftime("%Y-%M-%d %X"),
                 'imgUrl': result[3],
                 'food': [{
+                    'foodId': result[4],
                     'foodName': result[6],
                     'foodGroup': result[7],
                     'confidence': result[8]
@@ -116,6 +117,7 @@ def getLastMeal(userId):
         'timestamp': result[2].strftime("%Y-%M-%d %X"),
         'imgUrl': result[3],
         'food': [{
+            'foodId': i[0],
             'foodName': i[2],
             'foodGroup': i[3],
             'confidence': i[4]
