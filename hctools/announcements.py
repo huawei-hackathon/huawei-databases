@@ -61,23 +61,26 @@ def recordElderlyMessage(userId, audio):
     )
     mycursor = mydb.cursor()
     ''' INSERT INTO OBS'''
-    with open("tmp.wav", "wb") as audioFile:
+    audioFileName = f'tmp/{uuid4()}.wav'
+    with open(audioFileName, "wb") as audioFile:
         st = base64.b64decode(audio)
         audioFile.write(st)
-        text = getAudio('tmp.wav')
+        text = getAudio(audioFileName)
         text = text.replace("'", "")
 
     ''' SENTIMENT ANALYSIS '''
     positivity = sentiment.sentimentAnalysis(text)
 
     id = uuid4() 
-    cmd =f'{OBSUTIL_PREFIX} cp tmp.wav obs://{AUDIO_FILES_BUCKET}/{id}.wav'
+    cmd =f'{OBSUTIL_PREFIX} cp {audioFileName} obs://{AUDIO_FILES_BUCKET}/{id}.wav'
     process = subprocess.run(cmd, shell=True, capture_output=True)
     obsUrl = f'https://{AUDIO_FILES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{id}.wav'
     ''' INSERT INTO DB '''
     sqlCommand = f"INSERT INTO `announcements` (userId, audioLink, announcementText, author, timestamp, sentiment) VALUES ({userId}, '{obsUrl}', '{text}', 'elderly', CURRENT_TIMESTAMP, {positivity})"
     mycursor.execute(sqlCommand)
     mydb.commit()
+
+    subprocess.run(f'rm {audioFileName}', shell=True)
 
     return {'status': 200}
 
@@ -90,13 +93,14 @@ def recordCaregiverMessage(userId, audio):
     )
     mycursor = mydb.cursor()
     ''' INSERT INTO OBS'''
-    with open("tmp.wav", "wb") as audioFile:
+    audioFileName = f'tmp/{uuid4()}.wav'
+    with open(audioFileName, "wb") as audioFile:
         st = base64.b64decode(audio)
         audioFile.write(st)
-        text = getAudio('tmp.wav')
+        text = getAudio(audioFileName)
 
     id = uuid4() 
-    cmd =f'{OBSUTIL_PREFIX} cp tmp.wav obs://{AUDIO_FILES_BUCKET}/{id}.wav'
+    cmd =f'{OBSUTIL_PREFIX} cp {audioFileName} obs://{AUDIO_FILES_BUCKET}/{id}.wav'
     process = subprocess.run(cmd, shell=True, capture_output=True)
     obsUrl = f'https://{AUDIO_FILES_BUCKET}.obs.ap-southeast-3.myhuaweicloud.com/{id}.wav'
     ''' INSERT INTO DB '''

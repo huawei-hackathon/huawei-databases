@@ -19,7 +19,8 @@ def locationUpdate():
     timestamp = None
     if 'timestamp' in obj.keys():
         timestamp = obj['timestamp']
-    roomName = roomName.title()
+    roomName = roomName.replace('_', ' ')
+    roomName = roomName.title() # Capitalise the first letter in name
     if roomName not in ['Outside', 'Living Room', 'Bedroom', 'Bathroom', 'Kitchen']:
         return {"status":300, "error": "Invalid Room Name"}
     return json.dumps(bluetooth.locationUpdate(userId, roomName, timestamp))

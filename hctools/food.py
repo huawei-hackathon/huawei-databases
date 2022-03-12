@@ -12,6 +12,7 @@ OBSUTIL_PREFIX = './../obsutil/obsutil'
 
 def uploadFoodObject(imagePath, userId): # Uploads a specific food item
     time = datetime.now().strftime("%Y-%m-%d/%X")
+    print(time)
     cmd = f'{OBSUTIL_PREFIX} cp {imagePath} obs://{FOOD_IMAGES_BUCKET}/{userId}/{time}.jpeg'
     process = subprocess.run(cmd, shell=True, capture_output=True)
     return process
