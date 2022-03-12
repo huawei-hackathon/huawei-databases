@@ -35,3 +35,13 @@ def queryLastMeal():
     obj = json.loads(obj)
     userId = int(obj['userId'])
     return json.dumps(food.getLastMeal(userId))
+
+def updateFoodGroup():
+    obj=request.data.decode("utf-8")
+    obj = obj.replace("'", '"') # Replace ' with " for json decoding
+    obj = json.loads(obj)
+    foodGroup = obj['correctFoodGroup']
+    foodId = int(obj['foodId']
+    if foodGroup not in ['dairy', 'dessert', 'fruit', 'grain', 'protein', 'vegetables']:
+        return {'status': 300, 'error': 'Invalid Food Group!'}
+    return json.dumps(food.updateFoodGroup(foodId, foodGroup))

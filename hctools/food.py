@@ -88,6 +88,12 @@ def getLastMeal(userId):
         'imgUrl': result[3]
     }
 
+def updateFoodGroup(foodId, foodGroup):
+    sqlCommand = f"UPDATE `foodgroups` SET foodGroup = '{foodGroup}' WHERE foodId = {foodId}"
+    mycursor.execute(sqlCommand)
+    mydb.commit()
+    return {'status':200}
+
 if __name__ == '__main__':
 
     pass
