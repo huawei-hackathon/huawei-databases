@@ -22,8 +22,14 @@ def uploadFoodObject(imagePath, userId): # Uploads a specific food item
     )
 
     mycursor = mydb.cursor()
+    ''' RUN RECOGNITION AI '''
+    foodGroups = getFoodGroups(imagePath)
+
+    if foodGroups == []:
+        ''' IF NO FOOD DETECTED ''' 
+        return {'status': 300, 'error': 'No Food Found!'}
     
-    ''' UPLOAD IMAGINE TO OBS ''' 
+    ''' UPLOAD IMAGE TO OBS ''' 
     imgUUID = uuid4()
     cmd = f'{OBSUTIL_PREFIX} cp {imagePath} obs://{FOOD_IMAGES_BUCKET}/{imgUUID}.jpg'
     process = subprocess.run(cmd, shell=True, capture_output=True)
@@ -36,7 +42,6 @@ def uploadFoodObject(imagePath, userId): # Uploads a specific food item
     mycursor.execute("SELECT LAST_INSERT_ID()")
     imgId = mycursor.fetchone()[0]
 
-    foodGroups = getFoodGroups(imagePath)
     for food in foodGroups:
         sqlCommand = f"INSERT INTO `foodgroups` (imgId, foodType, foodGroup, confidence) VALUES ({imgId}, '{food['foodType']}', '{food['foodGroup']}', {food['confidence']})"
         mycursor.execute(sqlCommand)
