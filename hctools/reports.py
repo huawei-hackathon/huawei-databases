@@ -5,6 +5,7 @@ import mysql.connector
 from uuid import uuid4
 from pprint import pprint
 from calendar import monthrange
+from anomaly import getBoundaries
 from password import SQL_PASSWORD
 from datetime import datetime, timedelta, date 
 from dateutil.relativedelta import relativedelta
@@ -121,6 +122,17 @@ def getData (userId):
     percentages = [round(i/sum(pieData), 1) for i in pieData]
     pieDataWithText = [f"{pieData[i]} ({percentages[i]}%)" for i in range(len(pieData))]
     
+    ''' ANOMALY DETECTION '''
+
+    heartRateAnomaly = healthInfo.runAnomaly(userId, 'heartRate')
+    stepCountAnomaly = healthInfo.runAnomaly(userId, 'stepCount')
+    stepAsymmetryAnomaly  = healthInfo.runAnomaly(userId, 'stepAsymmetry')
+    sleepTimeAnomaly = healthInfo.runAnomaly(userId, 'sleepSeconds')
+    print(heartRateAnomaly)
+    print(stepCountAnomaly)
+    print(stepAsymmetryAnomaly)
+    print(sleepTimeAnomaly)
+
     ''' DISPLAY TEXT ''' 
     displayText = ""
 
@@ -193,6 +205,14 @@ def getData (userId):
             "avgHeartRate": mean(heartRateList),
             "avgSleepTime": sleepTimeHelp(mean(sleepTimeList)),
             "avgWalkingAsymmetry": mean(asymmetryList),
+
+            '''
+            Each one of the anomaly is a 2-element array [lower, upper] 
+            '''
+            "heartRateAnomaly": heartRateAnomaly,
+            "stepCountAnomaly": stepCountAnomaly,
+            "stepAsymmetryAnomaly": stepAsymmetryAnomaly,
+            "sleepTimeAnomaly": sleepTimeAnomaly,
 
             "dietLabels": ["Carbohydrates", "Vegetable", "Protein", "idk"],
             "dietData": [60, 20, 40, 10],

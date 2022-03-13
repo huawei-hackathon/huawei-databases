@@ -3,8 +3,6 @@ import pandas as pd
 from datetime import datetime
 from prophet import Prophet
 
-m = Prophet(changepoint_range=0.95)
-
 ''' 
 FOR CAREGIVER APP, DAILY UPDATE - returns array of all anomalies in that day
 for heartRate, stepCount, timespent in each room
@@ -20,6 +18,7 @@ dayInQuestion = 'YYYY-MM-DD':
 '''
 
 def getAnomaliesDaily(x, y, dayInQuestion):
+    m = Prophet(changepoint_range=0.95)
     data = {'ds': x, 'y': y}
     data_df = pd.DataFrame(data=data)
 
@@ -85,6 +84,7 @@ dayInQuestion = 'YYYY-MM-DD':
 
 
 def getBoundaries(x, y, dayInQuestion):
+    m = Prophet(changepoint_range=0.95)
     data = {'ds': x, 'y': y}
     data_df = pd.DataFrame(data=data)
 

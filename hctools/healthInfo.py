@@ -1,8 +1,10 @@
 import mysql.connector 
 from pprint import pprint
-from datetime import datetime
 from calendar import monthrange
 from password import SQL_PASSWORD
+from anomaly import getBoundaries
+from datetime import datetime, timedelta
+from dateutil.relativedelta import relativedelta
 
 ''' https://techoverflow.net/2019/05/16/how-to-get-number-of-days-in-month-in-python/ '''
 def number_of_days_in_month(year, month):
@@ -25,7 +27,6 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
     sqlCommand = f"SELECT value,timestamp FROM `{healthInfoType}` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
     mycursor.execute(sqlCommand)
     result = mycursor.fetchall() 
-    #pprint(result)
     data = {}
     
     maxValue = 0
@@ -127,8 +128,54 @@ def updateHealthInformation(healthInfoType, userId, value, timestamp):
     mydb.commit()
     return {'status': 200}
 
-def getAnomalies(userId):
+def getAllHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='healthData'
+    )
+
+    mycursor = mydb.cursor()
+    
+    healthInfoType = healthInfoType.lower()
+    firstDateString = firstDate.strftime("%Y-%m-%d, %H:%M:%S")
+    lastDateString = lastDate.strftime("%Y-%m-%d, %H:%M:%S")
+    sqlCommand = f"SELECT value,timestamp FROM `{healthInfoType}` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
+    mycursor.execute(sqlCommand)
+    result = mycursor.fetchall() 
+    output = {} 
+
+    for i in result:
+        dateString = i[1].strftime("%Y-%m-%d %X")
+        value = i[0]
+        if dateString not in output.keys():
+            output[dateString] = [value]
+        else:
+            output[dateString].append(value)
+
+    returnValue = {}
+    for i in output:
+        if healthInfoType == 'stepCount':
+            returnValue[i] = max(output[i])
+        else:
+            returnValue[i] = sum(output[i]) / len(output[i])
+        returnValue[i] = round(returnValue[i], 2)
+
+    return returnValue
+
+def runAnomaly(userId, healthInfoType):
     '''
     RUNS ANOMALY DETECTION ON THE HOURLY DATA FOR THE LAST 1 MONTH
     '''
-    
+    now = datetime.now()
+    lastday = datetime(now.year, now.month+1, 1) - timedelta(seconds=1) 
+    firstday = lastday - relativedelta(years=1)
+    heart = getAllHealthInformation(healthInfoType, userId, firstday, lastday, "year")
+    x, y = list(heart.keys()) , []
+    for i in x:
+        y.append(heart[i])
+    firstday = lastday - relativedelta(months=1) + timedelta(seconds = 1)
+    lower,upper = getBoundaries(x,y, firstday)
+
+    return [lower,upper] 

@@ -182,12 +182,11 @@ def analyseConversation(userId, firstDate, lastDate):
     firstDateString = firstDate.strftime("%Y-%m-%d, %H:%M:%S")
     lastDateString = lastDate.strftime("%Y-%m-%d, %H:%M:%S")
     sqlCommand = f"SELECT sentiment,author FROM `announcements` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
-    print(sqlCommand)
+    #print(sqlCommand)
     mycursor.execute(sqlCommand)
     result = mycursor.fetchall()
 
     conversationCount = len(result)
-    pprint(result)
     ''' GET ALL CONVERSATIONS WITH LOGGED SENTIMENT ''' 
     elderlyMessages = len([i for i in result if i[1] == 'elderly'])
     caregiverMessages = len([i for i in result if i[1] == 'caregiver'])
