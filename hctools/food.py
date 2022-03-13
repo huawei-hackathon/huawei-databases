@@ -148,10 +148,14 @@ def addFoodGroup(mealId, foodName, foodGroup):
     )
 
     mycursor = mydb.cursor()
-    sqlCommand = f"INSERT INTO `foodgroups` (mealId, foodName, foodGroup) VALUES ({mealId}, foodName, foodGroup)"
+    sqlCommand = f"INSERT INTO `foodgroups` (imgId, foodType, foodGroup, confidence) VALUES ({mealId}, '{foodName}', '{foodGroup}', 1)"
     mycursor.execute(sqlCommand)
     mydb.commit()
-    return {'status':200}
+
+    mycursor.execute("SELECT LAST_INSERT_ID()")
+    foodId = mycursor.fetchone()[0]
+    
+    return {'foodId':foodId}
 
 def deleteEntry(foodId):
     mydb = mysql.connector.connect(
