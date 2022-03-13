@@ -67,7 +67,7 @@
 
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <form class="user">
+                                    <form class="user" method="POST" action="/customizeReport" enctype="multipart/form-data">
                                         <!-- <div class="form-group row">
                                             <div class="col-sm-6 mb-3 mb-sm-0">
                                                 <input type="text" class="form-control form-control-user" id="exampleFirstName"
@@ -80,7 +80,7 @@
                                         </div> -->
                                         <div class="form-group">
                                             <label for="activityStatus">How active is the lifestyle of the elderly?</label>
-                                            <select class="form-control" id="activityStatusSelect">
+                                            <select class="form-control" id="activityStatusSelect" name="activityStatusSelect">
                                               <option>Very Active</option>
                                               <option>Somewhat Active</option>
                                               <option>Not Active</option>
@@ -89,7 +89,7 @@
 
                                         <div class="form-group">
                                             <label for="indoorStatus">Does this elderly tend to go outdoors?</label>
-                                            <select class="form-control" id="indoorStatusSelect">
+                                            <select class="form-control" id="indoorStatusSelect" name="indoorStatusSelect">
                                               <option>All the time</option>
                                               <option>Sometimes</option>
                                               <option>Not at all, Prefers staying indoors</option>
@@ -98,16 +98,16 @@
 
                                         <div class="form-group">
                                             <label for="sleepStatus">Does this elderly sleep well?</label>
-                                            <select class="form-control" id="sleepStatuslSelect">
+                                            <select class="form-control" id="sleepStatuslSelect" name="sleepStatusSelect">
                                               <option>Sleeps Very Well</option>
                                               <option>Average Sleep Quality</option>
                                               <option>Sleeps Poorly</option>
                                             </select>
                                         </div>
                                         
-                                        <a href="/" class="btn btn-primary btn-user btn-block">
+                                        <button type="submit" class="btn btn-primary btn-user btn-block" href="/customizeReport">
                                             Generate Report!
-                                        </a>
+                                        </button>
                                         <!-- <hr> -->
                                     </form>
                                 </div>

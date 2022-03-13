@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, request
 
 from routes import food, users, announcements, healthInfo, reports, bluetooth
 app = Flask(__name__)
@@ -49,7 +49,7 @@ def customizeReport():
 
         print(activityStatusSelect, indoorStatusSelect, sleepStatusSelect)
 
-        # return render_template('customizeReport.html', activityStatusSelect=activityStatusSelect, indoorStatusSelect=indoorStatusSelect, sleepStatusSelect=sleepStatusSelect)
+        return render_template('customizeReport.html', activityStatusSelect=activityStatusSelect, indoorStatusSelect=indoorStatusSelect, sleepStatusSelect=sleepStatusSelect)
 
 ''' BLUETOOTH '''
 app.add_url_rule('/locationUpdate', view_func = bluetooth.locationUpdate, methods=['POST'])
