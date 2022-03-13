@@ -2,3 +2,4 @@ password.py
 hctools/password.py
 cardiffnlp/
 tmp/
+__pycache__/
