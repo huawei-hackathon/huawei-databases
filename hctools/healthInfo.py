@@ -171,8 +171,8 @@ def runAnomaly(userId, healthInfoType):
     now = datetime.now()
     lastday = datetime(now.year, now.month+1, 1) - timedelta(seconds=1) 
     firstday = lastday - relativedelta(years=1)
-    heart = getAllHealthInformation(healthInfoType, userId, firstday, lastday, "year")
-    x, y = list(heart.keys()) , []
+    info = getAllHealthInformation(healthInfoType, userId, firstday, lastday, "year")
+    x, y = list(info.keys()) , []
     for i in x:
         y.append(heart[i])
     firstday = lastday - relativedelta(months=1) + timedelta(seconds = 1)
@@ -207,7 +207,10 @@ def hourlyAnomaly(userId, healthInfoType):
     while firstday < lastday:
         x.append(firstday)
         y.append(0)
-        firstday = firstday + timedelta(hours=1)
+        if healthInfoType == 'sleepSeconds':
+            firstday = firstday + relativedelta(days=1)
+        else:
+            firstday = firstday + timedelta(hours=1)
 
     for result in results:
         for i in range(len(x)):

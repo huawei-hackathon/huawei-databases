@@ -38,9 +38,7 @@ def generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount):
             healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg,5), timestr)
         else:
             # INSERT HEART RATE ANOMALY AFTER DAY 20
-            print(heartRateAvg)
-            if initDate.hour == 17:
-            #if initDate.day == 20 and initDate.hour == 17:
+            if initDate.day == 20 and initDate.hour == 17:
                 healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg+30,1), timestr)
             else:
                 healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg,5), timestr)
