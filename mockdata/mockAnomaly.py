@@ -12,8 +12,7 @@ def randrange(low, high):
 
 def generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount):
     ''' CREATE CAREGIVER '''
-    caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', f'{uuid4}')['caregiverUserId']
-    #caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', 'ElizabethKhua69')['caregiverUserId']
+    caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', f'{uuid4()}')['caregiverUserId']
     print(f"caregiverUserId: {caregiverUserId}")
 
     ''' CREATE ELDERLY '''
@@ -32,19 +31,36 @@ def generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount):
     heartRateAvg = 70
     daySteps = 0
     while initDate < endDate:
-        ''' CREATE SQL UPDATES '''
+        ''' HEART RATE DATA '''
         timestr = (initDate+ timedelta(seconds = randrange(50,60))).strftime("%Y-%m-%d, %H:%M:%S")
         if not heartRate:
-            healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg,5), timestr)
+            healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg,1), timestr)
         else:
-            # INSERT HEART RATE ANOMALY AFTER DAY 20
-            if initDate.day == 20 and initDate.hour == 17:
+            ''' SUDDEN PERMENANT INCREASE IN HEART RATE ''' 
+            if initDate.day > 20 or initDate.day == 19 and initDate.hour > 16:
                 healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg+30,1), timestr)
             else:
-                healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg,5), timestr)
+                healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(heartRateAvg,1), timestr)
 
-        #healthInfo.updateHealthInformation('stepAsymmetry', elderlyUserId, normal(4,0.5), timestr)
-        #healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(7*3600, 1800), timestr)
+        ''' STEP ASYMMETRY '''
+        if not stepAsymmetry:
+            healthInfo.updateHealthInformation('stepAsymmetry', elderlyUserId, normal(5, 0.2), timestr)
+        else:
+            if initDate.day == 24:
+                ''' ONE DAY OF HIGH STEP ASYMMETRY '''
+                healthInfo.updateHealthInformation('stepAsymmetry', elderlyUserId, normal(8, 0.1), timestr)
+            else:
+                healthInfo.updateHealthInformation('stepAsymmetry', elderlyUserId, normal(5, 0.2), timestr)
+
+        ''' SLEEP SECONDS ''' 
+        if not sleepSeconds:
+            healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(7*3600, 1800), timestr)
+        else:
+            if initDate.day == 18:
+                ''' LESS SLEEP THAN USUAL '''
+                healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(3*3600, 1800), timestr)
+            else:
+                healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(7*3600, 1800), timestr)
         
         ''' STEP COUNT '''
         if not stepCount:
@@ -65,14 +81,15 @@ def generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount):
             if initDate.hour == 18 and initDate.day != 19:
                 daySteps += 1000
             if initDate.hour >= 8 and initDate.hour <= 22:
-                daySteps += normal(20,10)
+                daySteps += normal(20,5)
             healthInfo.updateHealthInformation('stepCount', elderlyUserId, daySteps, timestr)
         
         ''' UPDATE DATE AND PROGRESS BAR'''
         initDate = initDate + timedelta(hours=1)
         if initDate.day != day:
-            day += 1
+            day = initDate.day
             bar.next()
+
     print()
     print("HEALTH DATA COMPLETE")
 
