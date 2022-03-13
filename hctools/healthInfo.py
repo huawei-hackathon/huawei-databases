@@ -197,7 +197,6 @@ def hourlyAnomaly(userId, healthInfoType):
     y = []
     lastday = datetime(now.year, now.month, now.day, 23, 59, 59)
     firstday = lastday - relativedelta(months=1, seconds=-1)
-    print(firstday, lastday)
     healthInfoType = healthInfoType.lower()
     firstDateString = firstday.strftime("%Y-%m-%d, %H:%M:%S")
     lastDateString = lastday.strftime("%Y-%m-%d, %H:%M:%S")
@@ -219,16 +218,27 @@ def hourlyAnomaly(userId, healthInfoType):
                 break
 
     anomalies = getAnomaliesDaily(x,y,datetime(now.year, now.month, now.day))
+    output = []
+    indexes = set()
+
     for anomaly in anomalies:
         anomaly['date'] = str(anomaly['date'])
         date = datetime.strptime(anomaly['date'], '%Y-%m-%d %H:%M:%S')
         i = x.index(date)
+        indexes.add(i) # CHECKS THAT THE PREVIOUS ELEMENT IS NOT AN ANOMALY
+
+    for anomaly in anomalies:
+        date = datetime.strptime(anomaly['date'], '%Y-%m-%d %H:%M:%S')
+        i = x.index(date)
+        if i-1 in indexes:
+            continue
         if i == 0: anomaly['type'] = 'higher'
         else:
             if y[i] > y[i-1]: anomaly['type'] = 'higher'
             else: anomaly['type'] = 'lower'
+        output.append(anomaly)
 
-    return anomalies
+    return output 
 
 if __name__ == '__main__':
     x = hourlyAnomaly(12, 'heartRate')

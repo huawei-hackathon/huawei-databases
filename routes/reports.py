@@ -3,7 +3,7 @@ from uuid import uuid4
 from flask import request, render_template
 from hctools import reports
 from datetime import datetime
-import mockReport
+from mockdata import mockReport, mockAnomaly
 
 def generateReport():
     obj=request.data.decode("utf-8")
@@ -36,3 +36,13 @@ def getReport(reportUUID):
 def getMockReport():
     return json.dumps(mockReport.generateReport())
 
+def getMockAnomaly():
+    obj=request.data.decode("utf-8")
+    obj = obj.replace("'", '"') # Replace ' with " for json decoding
+    obj = json.loads(obj)
+    heartRate = int(obj['heartRate'])
+    sleepSeconds = int(obj['sleepSeconds'])
+    stepAsymmetry = int(obj['stepAsymmetry'])
+    stepCount = int(obj['stepCount'])
+
+    return json.dumps(mockAnomaly.generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount))

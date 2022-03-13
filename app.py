@@ -38,6 +38,7 @@ app.add_url_rule('/getAnomalies', view_func = healthInfo.getAnomalies, methods=[
 app.add_url_rule('/generateReport', view_func = reports.generateReport, methods = ['POST'])
 app.add_url_rule('/getReport/<reportUUID>', view_func = reports.getReport, methods = ['GET'])
 app.add_url_rule('/mockReport', view_func = reports.getMockReport, methods=['GET'])
+app.add_url_rule('/mockAnomaly', view_func = reports.getMockAnomaly, methods=['GET'])
 
 @app.route('/customizeReport', methods=['GET', 'POST'])
 def customizeReport():
