@@ -41,3 +41,19 @@ def updateHealthInformation(healthInfoType):
     if "timestamp" in obj.keys():
         timestamp = obj['timestamp']
     return json.dumps(healthInfo.updateHealthInformation(healthInfoType, userId, value, timestamp))
+
+def getAnomalies():
+    obj=request.data.decode("utf-8")
+    obj = obj.replace("'", '"') # Replace ' with " for json decoding
+    obj = json.loads(obj)
+    userId = int(obj['userId'])
+    output = []
+    for healthInfoType in ['stepAsymmetry', 'heartRate', 'stepCount', 'sleepSeconds']:
+        anomalies = healthInfo.hourlyAnomaly(userId, healthInfoType)
+        if len(anomalies) > 0:
+            output.append({
+                'healthInfoType': healthInfoType,
+                'anomalies': anomalies
+            })
+
+    return json.dumps(output)

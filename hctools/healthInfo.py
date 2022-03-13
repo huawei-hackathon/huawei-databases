@@ -2,7 +2,7 @@ import mysql.connector
 from pprint import pprint
 from calendar import monthrange
 from password import SQL_PASSWORD
-from anomaly import getBoundaries
+from anomaly import getBoundaries, getAnomaliesDaily
 from datetime import datetime, timedelta
 from dateutil.relativedelta import relativedelta
 
@@ -179,3 +179,57 @@ def runAnomaly(userId, healthInfoType):
     lower,upper = getBoundaries(x,y, firstday)
 
     return [lower,upper] 
+
+def hourlyAnomaly(userId, healthInfoType):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='healthData'
+    )
+
+    mycursor = mydb.cursor()
+    ''' 
+    RUNS ANOMALY DETECTION ON THE LAST MONTH HOURLY DATA
+    '''
+    now = datetime.now()
+    x = []
+    y = []
+    lastday = datetime(now.year, now.month, now.day, 23, 59, 59)
+    firstday = lastday - relativedelta(months=1, seconds=-1)
+    print(firstday, lastday)
+    healthInfoType = healthInfoType.lower()
+    firstDateString = firstday.strftime("%Y-%m-%d, %H:%M:%S")
+    lastDateString = lastday.strftime("%Y-%m-%d, %H:%M:%S")
+    sqlCommand = f"SELECT value,timestamp FROM `{healthInfoType}` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
+    mycursor.execute(sqlCommand)
+    results = mycursor.fetchall() 
+    x = []
+    while firstday < lastday:
+        x.append(firstday)
+        y.append(0)
+        firstday = firstday + timedelta(hours=1)
+
+    for result in results:
+        for i in range(len(x)):
+            date = x[i]
+            ''' IF DATES ARE < 0.5 HOURS APART '''
+            if abs((result[1] - date).seconds) <= 30*60 and abs((result[1] - date).days) == 0:
+                y[i] = max(y[i], result[0])
+                break
+
+    anomalies = getAnomaliesDaily(x,y,datetime(now.year, now.month, now.day))
+    for anomaly in anomalies:
+        anomaly['date'] = str(anomaly['date'])
+        date = datetime.strptime(anomaly['date'], '%Y-%m-%d %H:%M:%S')
+        i = x.index(date)
+        if i == 0: anomaly['type'] = 'higher'
+        else:
+            if y[i] > y[i-1]: anomaly['type'] = 'higher'
+            else: anomaly['type'] = 'lower'
+
+    return anomalies
+
+if __name__ == '__main__':
+    x = hourlyAnomaly(12, 'heartRate')
+    print(x)

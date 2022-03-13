@@ -32,6 +32,7 @@ app.add_url_rule('/getConversation', view_func = announcements.getConversation, 
 ''' HEALTH INFORMATION '''
 app.add_url_rule('/<healthInfoType>/<frequency>', view_func = healthInfo.getHealthInformation, methods=['POST'])
 app.add_url_rule('/<healthInfoType>/postData', view_func = healthInfo.updateHealthInformation, methods=['POST'])
+app.add_url_rule('/getAnomalies', view_func = healthInfo.getAnomalies, methods=['POST'])
 
 ''' REPORTS '''
 app.add_url_rule('/generateReport', view_func = reports.generateReport, methods = ['POST'])

@@ -13,6 +13,7 @@ def randrange(low, high):
 def generateReport():
     ''' CREATE CAREGIVER '''
     caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', f'{uuid4}')['caregiverUserId']
+    #caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', 'ElizabethKhua69')['caregiverUserId']
     print(f"caregiverUserId: {caregiverUserId}")
 
     ''' CREATE ELDERLY '''

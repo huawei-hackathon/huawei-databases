@@ -105,6 +105,9 @@ def getLastMeal(userId):
     sqlCommand = f'SELECT * FROM `meals` WHERE userId = {userId} ORDER BY timestamp DESC'
     mycursor.execute(sqlCommand)
     result = mycursor.fetchone()
+    ''' NO FOOD GROUP FOUND '''
+    if result == None:
+        return {}
 
     mycursor = mydb.cursor()
     sqlCommand = f"SELECT * FROM `foodgroups` WHERE imgId = {result[0]}"
@@ -124,7 +127,6 @@ def getLastMeal(userId):
             'confidence': i[4]
             } for i in foodgroups]
     }
-
 
 def updateFoodGroup(foodId, foodGroup):
     mydb = mysql.connector.connect(
