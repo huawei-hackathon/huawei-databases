@@ -26,32 +26,26 @@ def generateReport():
 
     ''' GENERATING HEALTH SIGNALS '''
     now = datetime.now()
-    initDate = datetime(now.year, now.month, 1, 0, 0, 0)
     endDate = datetime(now.year, now.month, 1, 0, 0, 0) + relativedelta(months = 1) - timedelta (seconds=1)
+    initDate = endDate - relativedelta(years=1)
     print("GENERATING HEALTH DATA")
 
-    bar = Bar("Processing...", max=31)
+    bar = Bar("Processing...", max=365)
     day = 1
     while initDate < endDate:
         ''' CREATE SQL UPDATES '''
         timestr = (initDate+ timedelta(seconds = randrange(0, 7200))).strftime("%Y-%m-%d, %H:%M:%S")
-        healthInfo.updateHealthInformation('heartRate', elderlyUserId, randrange(70, 81), timestr)
-        healthInfo.updateHealthInformation('stepAsymmetry', elderlyUserId, randrange(1,6), timestr)
-        if initDate.hour == 9:
-            healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, randrange(6*3600, 8*3600), timestr)
+        healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(75,5), timestr)
+        healthInfo.updateHealthInformation('stepAsymmetry', elderlyUserId, normal(4,0.5), timestr)
+        healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(7*3600, 1800), timestr)
         
         ''' STEP COUNT '''
-        hour = [0, 3, 6, 9, 12, 15, 18, 21]
-        low = [0, 0, 0, 100, 400, 600, 800, 1000]
-        high = [0, 5, 10, 200, 600, 800, 900, 1250]
-        ind = hour.index(initDate.hour)
-        healthInfo.updateHealthInformation('stepCount', elderlyUserId, randrange(low[ind], high[ind]), timestr)
+        healthInfo.updateHealthInformation('stepCount', elderlyUserId, normal(1125, 125), timestr)
         
         ''' UPDATE DATE AND PROGRESS BAR'''
-        initDate = initDate + timedelta(hours=3)
-        if initDate.day > day:
-            day += 1
-            bar.next()
+        initDate = initDate + timedelta(hours=24)
+        day += 1
+        bar.next()
     print()
     print("HEALTH DATA COMPLETE")
 
@@ -148,6 +142,7 @@ def generateReport():
         initDate = initDate + timedelta(hours=left)
         day += 1
         bar.next()
+    print("CONVERSATION DATA COMPLETE")
     
     return {
         'caregiverUserId': caregiverUserId,

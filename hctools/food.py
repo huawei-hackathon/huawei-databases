@@ -72,6 +72,7 @@ def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
         if len(output) > 0 and output[-1]['mealId'] == result[0]:
             ''' combine '''
             output[-1]['food'].append({
+                'foodId': result[4],
                 'foodName': result[6],
                 'foodGroup': result[7],
                 'confidence': result[8]

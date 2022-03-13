@@ -211,7 +211,6 @@ def mockElderlyMessage(userId, timestamp, sentiment):
     mycursor = mydb.cursor()
 
     sqlCommand = f"INSERT INTO `announcements` (userId, author, timestamp, sentiment) VALUES ({userId},'elderly', '{timestamp}', {sentiment})"
-    print(sqlCommand)
     mycursor.execute(sqlCommand)
     mydb.commit()
 

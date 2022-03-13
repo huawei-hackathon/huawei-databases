@@ -127,3 +127,8 @@ def updateHealthInformation(healthInfoType, userId, value, timestamp):
     mydb.commit()
     return {'status': 200}
 
+def getAnomalies(userId):
+    '''
+    RUNS ANOMALY DETECTION ON THE HOURLY DATA FOR THE LAST 1 MONTH
+    '''
+    
