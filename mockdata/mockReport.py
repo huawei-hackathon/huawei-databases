@@ -10,7 +10,7 @@ def randrange(low, high):
     tx = rand()
     return low + tx * (high-low)
 
-def generateReport():
+def generateReport(activityStatus, indoorStatus, sleepStatus):
     ''' CREATE CAREGIVER '''
     caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', f'{uuid4()}')['caregiverUserId']
     #caregiverUserId = users.createCaregiver('Demonstration User', 'Nullpassword', 'ElizabethKhua69')['caregiverUserId']
@@ -35,9 +35,11 @@ def generateReport():
             'dairy': {'cheese': 2, 'milk': 6, 'soyabean': 5},
             'fruit': {'watermelon': 2, 'apple': 6, 'grapes': 4, 'banana': 1}
     }
+
     foodGroupWeights= {
             'fruit': 15, 'dessert': 15, 'grain': 14, 'vegetables': 20, 'dairy': 12, 'protein': 13
     }
+
     foodGroupOptions = []
     for i in foodGroupWeights: 
         foodGroupOptions += ([i] * foodGroupWeights[i])
@@ -83,10 +85,20 @@ def generateReport():
         timestr = (initDate+ timedelta(seconds = randrange(0, 7200))).strftime("%Y-%m-%d, %H:%M:%S")
         healthInfo.updateHealthInformation('heartRate', elderlyUserId, normal(75,5), timestr)
         healthInfo.updateHealthInformation('stepAsymmetry', elderlyUserId, normal(4,0.5), timestr)
-        healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(7*3600, 1800), timestr)
+        if sleepStatus == 2:
+            healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(8*3600, 500), timestr)
+        elif sleepStatus == 1:
+            healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(7*3600, 2500), timestr)
+        else:
+            healthInfo.updateHealthInformation('sleepSeconds', elderlyUserId, normal(6*3600, 6000), timestr)
         
         ''' STEP COUNT '''
-        healthInfo.updateHealthInformation('stepCount', elderlyUserId, normal(1125, 125), timestr)
+        if activityStatus== 2:
+            healthInfo.updateHealthInformation('stepCount', elderlyUserId, normal(1125, 125), timestr)
+        elif activityStatus == 1:
+            healthInfo.updateHealthInformation('stepCount', elderlyUserId, normal(1000, 75), timestr)
+        else:
+            healthInfo.updateHealthInformation('stepCount', elderlyUserId, normal(500, 25), timestr)
         
         ''' UPDATE DATE AND PROGRESS BAR'''
         initDate = initDate + timedelta(hours=24)
@@ -113,7 +125,7 @@ def generateReport():
             cooldown = False
 
         ''' GO TOILET '''
-        if randrange(1,10) <= 5:
+        if randrange(1,10) <= 5 or initDate.hour >= 22 and randrange(1,10) <= 8:
             timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
             bluetooth.locationUpdate(elderlyUserId, "Bathroom", timestr)
             initDate += timedelta(minutes = randrange(4, 8))
@@ -133,6 +145,9 @@ def generateReport():
         
         ''' TIME TO GO OUT '''
         if initDate.hour >= 11 and initDate.hour <= 19 and not cooldown:
+            x = 4
+            if indoorStatus == 2: x = 7
+            if indoorStatus == 0: x = 1
             if randrange(1,12) <= 4:
                 timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
                 bluetooth.locationUpdate(elderlyUserId, "Outside", timestr)
@@ -190,7 +205,6 @@ def generateReport():
         bar.next()
     print("CONVERSATION DATA COMPLETE")
 
-    
     return {
         'caregiverUserId': caregiverUserId,
         'elderlyUserId': elderlyUserId,

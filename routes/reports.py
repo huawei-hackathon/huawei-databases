@@ -1,9 +1,10 @@
 import json
+import requests
 from uuid import uuid4
-from flask import request, render_template
 from hctools import reports
 from datetime import datetime
 from mockdata import mockReport, mockAnomaly
+from flask import request, render_template, redirect
 
 def generateReport():
     obj=request.data.decode("utf-8")
@@ -34,7 +35,14 @@ def getReport(reportUUID):
     return render_template('index.html', data=data)
 
 def getMockReport():
-    return json.dumps(mockReport.generateReport())
+    obj=request.data.decode("utf-8")
+    obj = obj.replace("'", '"') # Replace ' with " for json decoding
+    obj = json.loads(obj)
+    activityStatus = int(obj['activityStatus'])
+    indoorStatus = int(obj['indoorStatus'])
+    sleepStatus = int(obj['sleepStatus'])
+
+    return json.dumps(mockReport.generateReport(activityStatus, indoorStatus, sleepStatus))
 
 def getMockAnomaly():
     obj=request.data.decode("utf-8")
@@ -49,3 +57,26 @@ def getMockAnomaly():
         caregiverUsername = obj['username']
 
     return json.dumps(mockAnomaly.generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount, caregiverUsername))
+
+def customizeReport():
+    if request.method == 'GET':
+        return render_template('customizeReport.html')
+    elif request.method == 'POST':
+        activityStatusSelect = request.form['activityStatusSelect']
+        indoorStatusSelect = request.form['indoorStatusSelect']
+        sleepStatusSelect = request.form['sleepStatusSelect']
+
+        activityStatusMap = {"Very Active":2, "Somewhat Active":1, "Not Active": 0}
+        activityStatus = activityStatusMap[activityStatusSelect]
+        indoorStatusMap = {"All the time": 2, "Sometimes": 1, "Not at all, Prefers staying indoors":0}
+        indoorStatus = indoorStatusMap[indoorStatusSelect]
+        sleepStatusMap = {"Sleeps Very Well":2, "Average Sleep Quality": 1, "Sleeps Poorly": 0}
+        sleepStatus = sleepStatusMap[sleepStatusSelect]
+
+        ''' MOCK REPORT '''
+        data = {'activityStatus': activityStatus, 'indoorStatus': indoorStatus, 'sleepStatus': sleepStatus}
+        response = requests.get('http://119.13.104.214:80/mockReport', json=data)
+        json = response.json()
+        url = json['url']
+        return redirect(url)
+

@@ -126,3 +126,22 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
             returnValue[index]['times'][d-1] += duration
 
     return returnValue
+
+def getBluetoothHistory(userId, firstDate, lastDate):
+
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='triggers'
+    )
+
+    mycursor = mydb.cursor()
+    
+    firstDateString = firstDate.strftime("%Y-%m-%d, %H:%M:%S")
+    lastDateString = lastDate.strftime("%Y-%m-%d, %H:%M:%S")
+    sqlCommand = f"SELECT roomName,timestamp FROM `roomentrylog` WHERE timestamp BETWEEN '{firstDateString}' AND '{lastDateString}' AND userId = {userId}"
+    mycursor.execute(sqlCommand)
+    results = mycursor.fetchall()
+    return results
+

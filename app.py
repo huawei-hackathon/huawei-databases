@@ -39,19 +39,7 @@ app.add_url_rule('/generateReport', view_func = reports.generateReport, methods 
 app.add_url_rule('/getReport/<reportUUID>', view_func = reports.getReport, methods = ['GET'])
 app.add_url_rule('/mockReport', view_func = reports.getMockReport, methods=['GET'])
 app.add_url_rule('/mockAnomaly', view_func = reports.getMockAnomaly, methods=['GET'])
-
-@app.route('/customizeReport', methods=['GET', 'POST'])
-def customizeReport():
-    if request.method == 'GET':
-        return render_template('customizeReport.html')
-    elif request.method == 'POST':
-        activityStatusSelect = request.form['activityStatusSelect']
-        indoorStatusSelect = request.form['indoorStatusSelect']
-        sleepStatusSelect = request.form['sleepStatusSelect']
-
-        print(activityStatusSelect, indoorStatusSelect, sleepStatusSelect)
-
-        return render_template('customizeReport.html', activityStatusSelect=activityStatusSelect, indoorStatusSelect=indoorStatusSelect, sleepStatusSelect=sleepStatusSelect)
+app.add_url_rule('/customizeReport', view_func = reports.customizeReport, methods = ['GET', 'POST'])
 
 ''' BLUETOOTH '''
 app.add_url_rule('/locationUpdate', view_func = bluetooth.locationUpdate, methods=['POST'])

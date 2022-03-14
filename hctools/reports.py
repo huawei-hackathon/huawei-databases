@@ -123,6 +123,55 @@ def getData (userId):
         pieData[-1] = round(pieData[-1], 0)
     percentages = [round(i/sum(pieData), 1) for i in pieData]
     pieDataWithText = [f"{pieData[i]} ({percentages[i]}%)" for i in range(len(pieData))]
+
+    bluetoothData = bluetooth.getBluetoothHistory(userId, firstday, lastday)
+    bluetoothData.sort(key = lambda x:x[1])
+    bluetoothData = bluetoothData[::-1]
+    
+    initTime = firstday + timedelta(seconds = 1)
+    endTime = lastday
+    timestamps = ["" for i in range(144)]
+    roomData = [{} for i in range(144)]
+    index = 0
+    currentRoom = 'Bedroom'
+
+    while initTime < endTime:
+        while len(bluetoothData) and bluetoothData[-1][1] < initTime:
+            currentRoom = bluetoothData[-1][0]
+            bluetoothData.pop()
+        if currentRoom in roomData[index].keys(): roomData[index][currentRoom] += 1
+        else: roomData[index][currentRoom] = 1
+
+        initTime += timedelta(minutes = 10)
+        index += 1
+        index %= 144
+    
+    now = datetime.now()
+    epoch = datetime.utcfromtimestamp(0)
+    for i in range(144):
+        time = datetime(now.year, now.month, now.day) + timedelta(minutes = 10*i)
+        timestamps[i] = 1000*(time - epoch).total_seconds()
+
+    rooms = ['Bathroom', 'Outside', 'Living Room', 'Kitchen', 'Bedroom']
+    bluetoothOutput = [[] for i in range(5)]
+    for i in range(144):
+        target = [4, 10, 10, 10, 0] # 0 to catch all with bedroom
+        ans = ""
+        for room in rooms:
+            ind = rooms.index(room)
+            if room in roomData[i].keys() and roomData[i][room] >= target[ind]:
+                ans = room
+                break
+        ind = rooms.index(ans)
+        bluetoothOutput[ind].append({
+            'starting_time': timestamps[i],
+            'ending_time': timestamps[i] + 900000 # 10 minutes
+            })
+
+    toiletTime, outsideTime, livingRoomTime, kitchenTime, bedroomTime = bluetoothOutput[0], bluetoothOutput[1], bluetoothOutput[2], bluetoothOutput[3], bluetoothOutput[4]
+
+    graphStart = timestamps[0]
+    graphEnd = timestamps[-1] + 600000
     
     ''' ANOMALY DETECTION '''
 
@@ -209,15 +258,6 @@ def getData (userId):
 
         if maxVal != 0:
             foodTableData.append([maxFood, header, maxVal])
-
-    bedroomTime = [{"starting_time":1647187200000, "ending_time":1647216000000}, {"starting_time":1647262800000, "ending_time":1647273600000}]
-    kitchenTime = [{"starting_time":1647216000000, "ending_time":1647223200000}, {"starting_time":1647244800000, "ending_time":1647252000000}]
-    livingRoomTime = [{"starting_time":1647223200000, "ending_time":1647244800000}]
-    toiletTime = [{"starting_time":1647252000000, "ending_time":1647255600000}]
-    outsideTime = [{"starting_time":1647255600000, "ending_time":1647262800000}]
-
-    graphStart = 1647187200000
-    graphEnd = 1647273600000
 
     data = {
             "elderlyName": elderlyInfo['name'],
