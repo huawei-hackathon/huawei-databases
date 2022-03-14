@@ -38,14 +38,14 @@ var heartRateChart = new Chart(heartRateHTML, {
       lineTension: 0,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
-      pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
+      pointRadius: heartRatePoints,
+      pointBackgroundColor: heartRatePointColors,
+      pointBorderColor: 'rgba(78, 115, 223, 1)',
+      pointHoverRadius: 0,
       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 2,
-      pointBorderWidth: 2,
+      pointHitRadius: 0,
+      pointBorderWidth: 0,
       data: heartRateList,
     }],
   },
@@ -117,6 +117,72 @@ var heartRateChart = new Chart(heartRateHTML, {
           return number_format(tooltipItem[0].yLabel) + ' bpm';
         }
       }
+    },
+    annotation: {
+      annotations:[{
+        type: 'line',
+        drawTime: 'afterDatasetsDraw',
+        id: 'heartRateHigh',
+        mode: 'horizontal',
+        scaleID: 'y-axis-0',
+        value: heartRateAnomaly[1],
+        // endValue: 30,
+        borderColor: 'red',
+        borderWidth: 2,
+        // borderDash: [2, 2],
+        // borderDashOffset: 5,
+        onMouseover: function(e) {
+          // The annotation is is bound to the `this` variable
+          console.log("Annotation", e.type, this);
+        },
+        label: {
+            backgroundColor: 'rgba(256,256,256,0.7)',
+            fontFamily: "Nunito",
+            fontSize: 12,
+            // fontStyle: "bold",
+            fontColor: 'black',
+            xPadding: 8,
+            yPadding: 4,
+            cornerRadius: 4,
+            position: "center",
+            xAdjust: 0,
+            yAdjust: 0,
+            enabled: true,
+            content: "Predicted High"
+        }
+      },
+      {
+          type: 'line',
+          drawTime: 'afterDatasetsDraw',
+          id: 'heartRateLow',
+          mode: 'horizontal',
+          scaleID: 'y-axis-0',
+          value: heartRateAnomaly[0],
+          // endValue: 30,
+          borderColor: 'teal',
+          borderWidth: 2,
+          // borderDash: [2, 2],
+          // borderDashOffset: 5,
+          onMouseover: function(e) {
+            // The annotation is is bound to the `this` variable
+            console.log("Annotation", e.type, this);
+          },
+          label: {
+              backgroundColor: 'rgba(256,256,256,0.7)',
+              fontFamily: "Nunito",
+              fontSize: 12,
+              // fontStyle: "bold",
+              fontColor: 'black',
+              xPadding: 8,
+              yPadding: 4,
+              cornerRadius: 4,
+              position: "center",
+              xAdjust: 0,
+              yAdjust: 0,
+              enabled: true,
+              content: "Predicted Low"
+          }
+      }]
     }
   }
 });
@@ -132,14 +198,14 @@ var walkingAsymmetryChart = new Chart(walkingAsymmetryHTML, {
       lineTension: 0,
       backgroundColor: "rgba(78, 115, 223, 0.05)",
       borderColor: "rgba(78, 115, 223, 1)",
-      pointRadius: 3,
-      pointBackgroundColor: "rgba(78, 115, 223, 1)",
+      pointRadius: stepAsymmetryPoints,
+      pointBackgroundColor: stepAsymmetryPointColors,
       pointBorderColor: "rgba(78, 115, 223, 1)",
-      pointHoverRadius: 3,
+      pointHoverRadius: 0,
       pointHoverBackgroundColor: "rgba(78, 115, 223, 1)",
       pointHoverBorderColor: "rgba(78, 115, 223, 1)",
-      pointHitRadius: 2,
-      pointBorderWidth: 2,
+      pointHitRadius: 0,
+      pointBorderWidth: 0,
       data: asymmetryList,
     }],
   },
@@ -211,6 +277,72 @@ var walkingAsymmetryChart = new Chart(walkingAsymmetryHTML, {
           return tooltipItem[0].yLabel + '%';
         }
       }
+    },
+    annotation: {
+      annotations:[{
+        type: 'line',
+        drawTime: 'afterDatasetsDraw',
+        id: 'asymmetryHigh',
+        mode: 'horizontal',
+        scaleID: 'y-axis-0',
+        value: stepAsymmetryAnomaly[1],
+        // endValue: 30,
+        borderColor: 'red',
+        borderWidth: 2,
+        // borderDash: [2, 2],
+        // borderDashOffset: 5,
+        onMouseover: function(e) {
+          // The annotation is is bound to the `this` variable
+          console.log("Annotation", e.type, this);
+        },
+        label: {
+            backgroundColor: 'rgba(256,256,256,0.7)',
+            fontFamily: "Nunito",
+            fontSize: 12,
+            // fontStyle: "bold",
+            fontColor: 'black',
+            xPadding: 8,
+            yPadding: 4,
+            cornerRadius: 4,
+            position: "center",
+            xAdjust: 0,
+            yAdjust: 0,
+            enabled: true,
+            content: "Predicted High"
+        }
+      },
+      {
+          type: 'line',
+          drawTime: 'afterDatasetsDraw',
+          id: 'asymmetryLow',
+          mode: 'horizontal',
+          scaleID: 'y-axis-0',
+          value: stepAsymmetryAnomaly[0],
+          // endValue: 30,
+          borderColor: 'teal',
+          borderWidth: 2,
+          // borderDash: [2, 2],
+          // borderDashOffset: 5,
+          onMouseover: function(e) {
+            // The annotation is is bound to the `this` variable
+            console.log("Annotation", e.type, this);
+          },
+          label: {
+              backgroundColor: 'rgba(256,256,256,0.7)',
+              fontFamily: "Nunito",
+              fontSize: 12,
+              // fontStyle: "bold",
+              fontColor: 'black',
+              xPadding: 8,
+              yPadding: 4,
+              cornerRadius: 4,
+              position: "center",
+              xAdjust: 0,
+              yAdjust: 0,
+              enabled: true,
+              content: "Predicted Low"
+          }
+      }]
     }
   }
 });

@@ -341,6 +341,16 @@
         var bluetoothPieChartData = {{ data.bluetoothPieChartData |tojson }} 
         var Month = {{ data.month |tojson }}
         var Year = {{ data.year |tojson }}
+
+        var heartRateAnomaly = {{ data.heartRateAnomaly | tojson }}
+        var stepCountAnomaly = {{ data.stepCountAnomaly | tojson }}
+        var stepAsymmetryAnomaly = {{ data.stepAsymmetryAnomaly | tojson }}
+        var sleepTimeAnomaly = {{ data.sleepTimeAnomaly | tojson }}
+
+        var heartRatePoints = {{ data.heartRatePoints | tojson }}
+        var heartRatePointColors = {{ data.heartRatePointColors | tojson }}
+        var stepAsymmetryPoints = {{ data.stepAsymmetryPoints | tojson }}
+        var stepAsymmetryPointColors = {{ data.stepAsymmetryPointColors | tojson }}
     </script>
 
     <!-- Page level custom scripts -->

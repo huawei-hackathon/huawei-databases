@@ -133,6 +133,20 @@ def getData (userId):
     print(stepAsymmetryAnomaly)
     print(sleepTimeAnomaly)
 
+    ''' GRAPH ANNOTATION FOR ANOMALY '''
+    heartRatePoints = [3 if i > heartRateAnomaly[0] or i < heartRateAnomaly[1] else 5 for i in heartRateList]
+    heartRatePointColors = ['rgba(78, 115, 223, 1)' if i > heartRateAnomaly[0] or i < heartRateAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in heartRateList]
+
+    stepAsymmetryPoints = [3 if i > stepAsymmetryAnomaly[0] or i < stepAsymmetryAnomaly[1] else 5 for i in asymmetryList]
+    stepAsymmetryPointColors = ['rgba(78, 115, 223, 1)' if i > stepAsymmetryAnomaly[0] or i < stepAsymmetryAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in asymmetryList]
+
+    # to be implemented
+    # stepCountPoints = [3 if i > stepCountAnomaly[0] or i < stepCountAnomaly[1] else 5 for i in stepList]
+    # stepCountPointColors = ['rgba(78, 115, 223, 1)' if i > stepCountAnomaly[0] or i < stepCountAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in stepList]
+
+    # sleepTimePoints = []
+    # sleepTimePointColors = []
+
     ''' DISPLAY TEXT ''' 
     displayText = ""
 
@@ -213,6 +227,11 @@ def getData (userId):
             "stepCountAnomaly": stepCountAnomaly,
             "stepAsymmetryAnomaly": stepAsymmetryAnomaly,
             "sleepTimeAnomaly": sleepTimeAnomaly,
+
+            "heartRatePoints": heartRatePoints,
+            "heartRatePointColors": heartRatePointColors,
+            "stepAsymmetryPoints": stepAsymmetryPoints,
+            "stepAsymmetryPointColors": stepAsymmetryPointColors,
 
             "dietLabels": ["Carbohydrates", "Vegetable", "Protein", "idk"],
             "dietData": [60, 20, 40, 10],
