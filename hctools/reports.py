@@ -210,6 +210,15 @@ def getData (userId):
         if maxVal != 0:
             foodTableData.append([maxFood, header, maxVal])
 
+    bedroomTime = [{"starting_time":1647187200000, "ending_time":1647216000000}, {"starting_time":1647262800000, "ending_time":1647273600000}]
+    kitchenTime = [{"starting_time":1647216000000, "ending_time":1647223200000}, {"starting_time":1647244800000, "ending_time":1647252000000}]
+    livingRoomTime = [{"starting_time":1647223200000, "ending_time":1647244800000}]
+    toiletTime = [{"starting_time":1647252000000, "ending_time":1647255600000}]
+    outsideTime = [{"starting_time":1647255600000, "ending_time":1647262800000}]
+
+    graphStart = 1647187200000
+    graphEnd = 1647273600000
+
     data = {
             "elderlyName": elderlyInfo['name'],
             "elderlyAge": elderlyInfo['age'],
@@ -277,6 +286,15 @@ def getData (userId):
 
             "foodTableHeaders": foodTableHeaders,
             "foodTableData": foodTableData,
+
+            "graphStart": graphStart,
+            "graphEnd": graphEnd,
+
+            "bedroomTime": bedroomTime,
+            "kitchenTime": kitchenTime,
+            "livingRoomTime": livingRoomTime,
+            "toiletTime": toiletTime,
+            "outsideTime": outsideTime,
 
             "dietAnalysis": "Idk some body of text here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ", # we dont have the actual data yet
     }

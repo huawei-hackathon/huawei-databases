@@ -65,8 +65,8 @@ var dietPieChart = new Chart(dietPieChartHTML, {
     labels: dietLabels,
     datasets: [{
       data: dietData,
-      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc','#e74a3b'],
-      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf','#A8362C'],
+      backgroundColor: ['#4e73df', '#1cc88a', '#36b9cc','#e74a3b','#DBDB4F'],
+      hoverBackgroundColor: ['#2e59d9', '#17a673', '#2c9faf','#A8362C','#ffa500'],
       hoverBorderColor: "rgba(234, 236, 244, 1)",
     }],
   },
