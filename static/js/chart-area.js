@@ -187,6 +187,9 @@ var heartRateChart = new Chart(heartRateHTML, {
   }
 });
 
+console.log(heartRateAnomaly)
+console.log('here')
+
 // Walking Assymmetry Chart
 var walkingAsymmetryHTML = document.getElementById("walkingAsymmetryAreaChart");
 var walkingAsymmetryChart = new Chart(walkingAsymmetryHTML, {

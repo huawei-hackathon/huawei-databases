@@ -174,7 +174,7 @@ def runAnomaly(userId, healthInfoType):
     info = getAllHealthInformation(healthInfoType, userId, firstday, lastday, "year")
     x, y = list(info.keys()) , []
     for i in x:
-        y.append(heart[i])
+        y.append(info[i])
     firstday = lastday - relativedelta(months=1) + timedelta(seconds = 1)
     lower,upper = getBoundaries(x,y, firstday)
 

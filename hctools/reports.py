@@ -218,10 +218,6 @@ def getData (userId):
             "avgHeartRate": mean(heartRateList),
             "avgSleepTime": sleepTimeHelp(mean(sleepTimeList)),
             "avgWalkingAsymmetry": mean(asymmetryList),
-
-            '''
-            Each one of the anomaly is a 2-element array [lower, upper] 
-            '''
             "heartRateAnomaly": heartRateAnomaly,
             "stepCountAnomaly": stepCountAnomaly,
             "stepAsymmetryAnomaly": stepAsymmetryAnomaly,
