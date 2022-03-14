@@ -156,41 +156,6 @@
                             </div>
                         </div>
 
-                        <!-- Time Spent in Room Stacked Bar Chart-->
-                        <div class="col-xl-4 col-lg-6">
-                            <div class="card shadow mb-4">
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Daily Average Time Spent In Room</h6>
-                                </div>
-
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-bar" style="min-height: 18rem;">
-                                        <canvas id="indoorLocationBarChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Time Spent in Room Pie Chart -->
-                        <div class="col-xl-4 col-lg-6">
-                            <div class="card shadow mb-4">
-                                <!-- Card Header - Dropdown -->
-                                <div
-                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Average Distribution of Time Spent in Rooms</h6>
-
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body">
-                                    <div class="chart-area">
-                                        <canvas id="roomTimePieChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
                         <!-- Steps Chart -->
                         <div class="col-xl-4 col-lg-6">
                             <div class="card shadow mb-4">
@@ -225,6 +190,106 @@
                             </div>
                         </div>
 
+                        <!-- Time Spent in Room Stacked Bar Chart-->
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card shadow mb-4">
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Daily Average Time Spent In Room</h6>
+                                </div>
+
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-bar" style="min-height: 18rem;">
+                                        <canvas id="indoorLocationBarChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Time Spent in Room Pie Chart -->
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div
+                                    class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Average Distribution of Time Spent in Rooms</h6>
+
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="roomTimePieChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- bluetooth schedule -->
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Average Daily Schedule of Elderly </h6>
+
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <p>dksajdsalkjdsalk</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Diet Analysis -->
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card shadow mb-4">  
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Diet Analysis</h6>
+                                </div>
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <div class="table-responsive">
+                                            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+                                                <thead>
+                                                    <tr>
+                                                        {% for i in data.foodTableHeaders %}
+                                                            <th>{{ i }}</th>
+                                                        {% endfor %}
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    {% for i in data.foodTableData %}
+                                                    <tr>
+                                                        {% for j in i %}
+                                                            <td>{{ j }}</td>
+                                                        {% endfor %}
+                                                    </tr>
+                                                    {% endfor %}
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                </div> 
+                            </div>
+                        </div>
+
+                        <!-- Diet Composition Pie Chart -->
+                        <div class="col-xl-4 col-lg-6">
+                            <div class="card shadow mb-4">
+                                <!-- Card Header - Dropdown -->
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary">Diet Composition</h6>
+
+                                </div>
+                                <!-- Card Body -->
+                                <div class="card-body">
+                                    <div class="chart-area">
+                                        <canvas id="dietPieChart"></canvas>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Walking Asymmetry -->
                         <div class="col-xl-4 col-lg-6">
                             <div class="card shadow mb-4">
@@ -239,48 +304,6 @@
                                 <div class="card-body">
                                     <div class="chart-area">
                                         <canvas id="walkingAsymmetryAreaChart"></canvas>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                    </div>
-
-                    <!-- Content Row -->
-                    <div class="row d-flex">
-                        <!-- Diet Analysis -->
-                        <div class="col-xl-8 col-lg-8 mb-4">
-                            <div class="card shadow h-100">
-                                <div class="card-header py-3">
-                                    <h6 class="m-0 font-weight-bold text-primary">Diet Analysis</h6>
-                                </div>
-                                <div class="card-body">
-                                    <div class="text-center">
-                                        <img class="img-fluid px-3 px-sm-4 mt-3 mb-4" style="width: 25rem;"
-                                            src="/static/img/undraw_posting_photo.svg" alt="...">
-                                    </div>
-                                    <p>Add some quality, svg illustrations to your project courtesy of <a
-                                            target="_blank" rel="nofollow" href="https://undraw.co/">unDraw</a>, a
-                                        constantly updated collection of beautiful svg images that you can use
-                                        completely free and without attribution!</p>
-                                            
-                                        <p>{{data.dietAnalysis}}</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <!-- Diet Composition Pie Chart -->
-                        <div class="col-xl-4 col-lg-4 mb-4">
-                            <div class="card shadow h-100">
-                                <!-- Card Header - Dropdown -->
-                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
-                                    <h6 class="m-0 font-weight-bold text-primary">Diet Composition</h6>
-
-                                </div>
-                                <!-- Card Body -->
-                                <div class="card-body h-100">
-                                    <div class="chart-area">
-                                        <canvas id="dietPieChart"></canvas>
                                     </div>
                                 </div>
                             </div>
@@ -327,7 +350,9 @@
     <!-- Page level plugins -->
     <script src="/static/vendor/chart.js/Chart.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/chartjs-plugin-annotation/0.5.7/chartjs-plugin-annotation.js"></script>
-
+    <script src="/static/vendor/datatables/jquery.dataTables.min.js"></script>
+    <script src="/static/vendor/datatables/dataTables.bootstrap4.min.js"></script>
+    
     <!-- import flask variables -->
     <script type="text/javascript">
         var datesOfMonth = {{ data.datesOfMonth|tojson }}
@@ -358,13 +383,13 @@
 
         var sleepTimeColors = {{ data.sleepTimeColors | tojson }}
         var sleepTimeHighlightColors = {{ data.sleepTimeHighlightColors | tojson }}
-
     </script>
 
     <!-- Page level custom scripts -->
     <script src="/static/js/chart-area.js"></script>
     <script src="/static/js/chart-pie.js"></script>
     <script src="/static/js/chart-bar.js"></script>
+    <script src="/static/js/datatables.js"></script>
 
 </body>
 

@@ -172,6 +172,10 @@ def getData (userId):
             
     displayText += sentimentText
 
+
+    foodTableHeaders = ["Food", "Number of Times"]
+    foodTableData = [['Food 1', 50], ['Food 2', 30], ['Food 3', 20], ['Food 4', 10], ['Food 5', 5], ['Food 6', 2], ['Food 7', 1]]
+    
     data = {
             "elderlyName": elderlyInfo['name'],
             "elderlyAge": elderlyInfo['age'],
@@ -236,6 +240,9 @@ def getData (userId):
 
             "bluetoothPieChartLabels": roomNames,
             "bluetoothPieChartData": pieData,
+
+            "foodTableHeaders": foodTableHeaders,
+            "foodTableData": foodTableData,
 
             "dietAnalysis": "Idk some body of text here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ", # we dont have the actual data yet
     }
