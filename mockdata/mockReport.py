@@ -125,7 +125,7 @@ def generateReport(activityStatus, indoorStatus, sleepStatus):
             cooldown = False
 
         ''' GO TOILET '''
-        if randrange(1,10) <= 5 or initDate.hour >= 22 and randrange(1,10) <= 8:
+        if randrange(1,10) <= 5 or initDate.hour >= 16 and randrange(1,10) <= 8:
             timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
             bluetooth.locationUpdate(elderlyUserId, "Bathroom", timestr)
             initDate += timedelta(minutes = randrange(4, 8))
@@ -135,7 +135,7 @@ def generateReport(activityStatus, indoorStatus, sleepStatus):
             continue
 
         ''' SLEEP ''' 
-        if initDate.hour >= 22 or initDate.hour < 7:
+        if initDate.hour >= 20 or initDate.hour < 7:
             if ROOM != 'Bedroom':
                 timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
                 bluetooth.locationUpdate(elderlyUserId, "Bedroom", timestr)
@@ -145,9 +145,9 @@ def generateReport(activityStatus, indoorStatus, sleepStatus):
         
         ''' TIME TO GO OUT '''
         if initDate.hour >= 11 and initDate.hour <= 19 and not cooldown:
-            x = 4
-            if indoorStatus == 2: x = 7
-            if indoorStatus == 0: x = 1
+            x = 5
+            if indoorStatus == 0: x = 7
+            if indoorStatus == 2: x = 3
             if randrange(1,12) <= 4:
                 timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
                 bluetooth.locationUpdate(elderlyUserId, "Outside", timestr)
