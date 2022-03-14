@@ -164,14 +164,15 @@ def getData (userId):
                 break
         ind = rooms.index(ans)
         bluetoothOutput[ind].append({
-            'starting_time': timestamps[i],
-            'ending_time': timestamps[i] + 900000 # 10 minutes
+            'starting_time': timestamps[i] - 28800000,
+            'ending_time': timestamps[i] + 900000 - 28800000
             })
 
     toiletTime, outsideTime, livingRoomTime, kitchenTime, bedroomTime = bluetoothOutput[0], bluetoothOutput[1], bluetoothOutput[2], bluetoothOutput[3], bluetoothOutput[4]
 
-    graphStart = timestamps[0]
-    graphEnd = timestamps[-1] + 600000
+    graphStart = timestamps[0] - 28800000
+    graphEnd = timestamps[-1] + 600000 - 28800000
+    print(graphStart, graphEnd)
     
     ''' ANOMALY DETECTION '''
 
