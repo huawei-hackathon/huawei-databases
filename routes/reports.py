@@ -44,5 +44,8 @@ def getMockAnomaly():
     sleepSeconds = int(obj['sleepSeconds'])
     stepAsymmetry = int(obj['stepAsymmetry'])
     stepCount = int(obj['stepCount'])
+    caregiverUsername = uuid4()
+    if 'username' in obj.keys():
+        caregiverUsername = obj['username']
 
-    return json.dumps(mockAnomaly.generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount))
+    return json.dumps(mockAnomaly.generateAnomaly(heartRate, sleepSeconds, stepAsymmetry, stepCount, caregiverUsername))
