@@ -17,11 +17,13 @@ def mean(array):
 def number_of_days_in_month(year, month):
     return monthrange(year, month)[1]
 
-def sleepTimeHelp(sleepSeconds):
+def sleepTimeHelp(sleepSeconds, flag = 0):
     sleepSeconds *= 3600
     sleepMinutes = round(sleepSeconds/60)
     sleepHours = int(sleepMinutes/60)
     sleepMinutes -= 60*sleepHours
+    if flag == 1:
+        return [sleepHours, sleepMinutes]
     sleepHours += (sleepMinutes/60)
     return round(sleepHours,2)
 
@@ -250,7 +252,7 @@ def getData (userId):
 
             "avgSteps": mean(stepsList),
             "avgHeartRate": mean(heartRateList),
-            "avgSleepTime": sleepTimeHelp(mean(sleepTimeList)),
+            "avgSleepTime": sleepTimeHelp(mean(sleepTimeList), 1),
             "avgWalkingAsymmetry": mean(asymmetryList),
             "heartRateAnomaly": heartRateAnomaly,
             "stepCountAnomaly": stepCountAnomaly,
