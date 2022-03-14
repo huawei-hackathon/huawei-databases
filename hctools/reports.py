@@ -22,7 +22,8 @@ def sleepTimeHelp(sleepSeconds):
     sleepMinutes = round(sleepSeconds/60)
     sleepHours = int(sleepMinutes/60)
     sleepMinutes -= 60*sleepHours
-    return [sleepHours, sleepMinutes]
+    sleepHours += (sleepMinutes/60)
+    return round(sleepHours,2)
 
 def generateReport(uuid, userId):
     mydb = mysql.connector.connect(
@@ -127,11 +128,8 @@ def getData (userId):
     heartRateAnomaly = healthInfo.runAnomaly(userId, 'heartRate')
     stepCountAnomaly = healthInfo.runAnomaly(userId, 'stepCount')
     stepAsymmetryAnomaly  = healthInfo.runAnomaly(userId, 'stepAsymmetry')
-    sleepTimeAnomaly = healthInfo.runAnomaly(userId, 'sleepSeconds')
-    print(heartRateAnomaly)
-    print(stepCountAnomaly)
-    print(stepAsymmetryAnomaly)
-    print(sleepTimeAnomaly)
+    sleepSecondsAnomaly = healthInfo.runAnomaly(userId, 'sleepSeconds')
+    sleepTimeAnomaly = [sleepTimeHelp(i/3600) for i in sleepSecondsAnomaly]
 
     ''' GRAPH ANNOTATION FOR ANOMALY '''
     heartRatePoints = [3 if i > heartRateAnomaly[0] and i < heartRateAnomaly[1] else 5 for i in heartRateList]

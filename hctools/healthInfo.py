@@ -239,6 +239,7 @@ def hourlyAnomaly(userId, healthInfoType):
         else:
             if y[i] > y[i-1]: anomaly['type'] = 'higher'
             else: anomaly['type'] = 'lower'
+            anomaly['delta'] = y[i] - y[i-1]
         output.append(anomaly)
 
     return output 
