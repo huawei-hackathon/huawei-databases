@@ -82,7 +82,6 @@ def getData (userId):
     name = elderlyInfo['name']
 
     ''' HEART RATES ''' 
-
     heartRates = healthInfo.getHealthInformation("heartRate", userId, firstday, lastday, "month")
     heartRateList = [0] * daysInMonth
     for i in heartRates: heartRateList[i['x']-1] = i['y']
@@ -172,10 +171,43 @@ def getData (userId):
             
     displayText += sentimentText
 
+    ''' FOOD DATA ''' 
+    lastday = datetime(now.year, now.month+1, 1) - timedelta(seconds=1) # TODO:CHANGE IN CASE IT CROSSES A YEAR BOUNDARY
+    firstday = lastday - relativedelta(months=1)
+    foodData = food.getFoodObjectsByDate(userId, firstday, lastday)
+    ''' POPULATE PIE CHART ''' 
+    foodGroupDistribution = {'dairy': 0, 'dessert': 0, 'protein': 0, 'grain': 0, 'vegetables': 0, 'fruit': 0}
 
-    foodTableHeaders = ["Food", "Number of Times"]
-    foodTableData = [['Food 1', 50], ['Food 2', 30], ['Food 3', 20], ['Food 4', 10], ['Food 5', 5], ['Food 6', 2], ['Food 7', 1]]
-    
+    for meal in foodData:
+        for f in meal['food']:
+            foodGroupDistribution[f['foodGroup']] += 1
+
+    dietLabels = list(foodGroupDistribution.keys())
+    dietLabels.sort()
+    dietValues = [foodGroupDistribution[i] for i in dietLabels]
+    foodTableData = []
+
+    ''' POPULATE TABLE ''' 
+    foodTableHeaders = ["Food", "Food Group", "Number of Times"]
+    for header in dietLabels:
+        hist = {}
+        for meal in foodData:
+            for f in meal['food']:
+                foodName = f['foodName']
+                foodGroup = f['foodGroup']
+                if foodGroup != header: continue
+                if foodName in hist.keys(): hist[foodName] += 1
+                else: hist[foodName] = 1
+        maxVal = 0
+        maxFood = ""
+        for i in hist: 
+            if hist[i]>maxVal:
+                maxVal = hist[i]
+                maxFood = i
+
+        if maxVal != 0:
+            foodTableData.append([maxFood, header, maxVal])
+
     data = {
             "elderlyName": elderlyInfo['name'],
             "elderlyAge": elderlyInfo['age'],
@@ -235,8 +267,8 @@ def getData (userId):
             "sleepTimeColors":sleepTimeColors,
             "sleepTimeHighlightColors":sleepTimeHighlightColors,
 
-            "dietLabels": ["Carbohydrates", "Vegetable", "Protein", "idk"],
-            "dietData": [60, 20, 40, 10],
+            "dietLabels": dietLabels,
+            "dietData":dietValues,
 
             "bluetoothPieChartLabels": roomNames,
             "bluetoothPieChartData": pieData,

@@ -26,7 +26,7 @@ def queryFoodImages():
     obj = json.loads(obj)
     userId = int(obj['userId'])
     date = datetime.strptime(obj['date'], "%Y-%m-%d")
-    return json.dumps(food.getFoodObjectsByDate(userId, date))
+    return json.dumps(food.getFoodObjectsByDate(userId, date,date))
 
 def queryLastMeal():
     obj=request.data.decode("utf-8")

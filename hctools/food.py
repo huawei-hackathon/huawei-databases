@@ -13,6 +13,23 @@ FOOD_IMAGES_BUCKET = 'hackathon-food-images'
 """ PREFIXES IS FOR RUNNING OF HUAWEI LIBRARY COMMANDS """
 OBSUTIL_PREFIX = './../obsutil/obsutil'
 
+def mockMeal(userId, timestamp):
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='food'
+    )
+
+    mycursor = mydb.cursor()
+    sqlCommand = f"INSERT INTO `meals` (userId, timestamp) VALUES ({userId}, CURRENT_TIMESTAMP)"
+    mycursor.execute(sqlCommand)
+    mydb.commit()
+
+    mycursor.execute("SELECT LAST_INSERT_ID()")
+    imgId = mycursor.fetchone()[0]
+    return imgId
+
 def uploadFoodObject(imagePath, userId): # Uploads a specific food item
     mydb = mysql.connector.connect(
         host="192.168.0.27",
@@ -51,7 +68,7 @@ def uploadFoodObject(imagePath, userId): # Uploads a specific food item
     subprocess.run(f"rm {imagePath}", shell=True)
     return {'stauts': 200, 'foodFound': True}
 
-def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
+def getFoodObjectsByDate(userId, startDate, endDate): # Gets all images from a certain date
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -60,8 +77,8 @@ def getFoodObjectsByDate(userId, date): # Gets all images from a certain date
     )
 
     mycursor = mydb.cursor()
-    startTime = datetime(date.year, date.month, date.day, 0,0,0)
-    endTime = datetime(date.year, date.month, date.day, 23, 59, 59)
+    startTime = datetime(startDate.year, startDate.month, startDate.day, 0,0,0)
+    endTime = datetime(endDate.year, endDate.month, endDate.day, 23, 59, 59)
     
     sqlCommand = f"SELECT * FROM `meals` RIGHT JOIN `foodgroups` ON meals.imgId = foodgroups.imgId WHERE userId = {userId} AND timestamp BETWEEN '{startTime}' AND '{endTime}' ORDER BY timestamp DESC"
     mycursor.execute(sqlCommand)
