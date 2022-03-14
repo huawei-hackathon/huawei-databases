@@ -134,18 +134,17 @@ def getData (userId):
     print(sleepTimeAnomaly)
 
     ''' GRAPH ANNOTATION FOR ANOMALY '''
-    heartRatePoints = [3 if i > heartRateAnomaly[0] or i < heartRateAnomaly[1] else 5 for i in heartRateList]
-    heartRatePointColors = ['rgba(78, 115, 223, 1)' if i > heartRateAnomaly[0] or i < heartRateAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in heartRateList]
+    heartRatePoints = [3 if i > heartRateAnomaly[0] and i < heartRateAnomaly[1] else 5 for i in heartRateList]
+    heartRatePointColors = ['rgba(78, 115, 223, 1)' if i > heartRateAnomaly[0] and i < heartRateAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in heartRateList]
 
-    stepAsymmetryPoints = [3 if i > stepAsymmetryAnomaly[0] or i < stepAsymmetryAnomaly[1] else 5 for i in asymmetryList]
-    stepAsymmetryPointColors = ['rgba(78, 115, 223, 1)' if i > stepAsymmetryAnomaly[0] or i < stepAsymmetryAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in asymmetryList]
+    stepAsymmetryPoints = [3 if i > stepAsymmetryAnomaly[0] and i < stepAsymmetryAnomaly[1] else 5 for i in asymmetryList]
+    stepAsymmetryPointColors = ['rgba(78, 115, 223, 1)' if i > stepAsymmetryAnomaly[0] and i < stepAsymmetryAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in asymmetryList]
 
-    # to be implemented
-    # stepCountPoints = [3 if i > stepCountAnomaly[0] or i < stepCountAnomaly[1] else 5 for i in stepList]
-    # stepCountPointColors = ['rgba(78, 115, 223, 1)' if i > stepCountAnomaly[0] or i < stepCountAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in stepList]
+    stepCountColors = ['rgba(78, 115, 223, 1)' if i > stepCountAnomaly[0] and i < stepCountAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in stepsList]
+    stepCountHighlightColors = ['#2e59d9' if i > stepCountAnomaly[0] and i < stepCountAnomaly[1] else 'rgba(145, 0, 0, 0.8)' for i in stepsList]
 
-    # sleepTimePoints = []
-    # sleepTimePointColors = []
+    sleepTimeColors = ['rgba(78, 115, 223, 1)' if i > sleepTimeAnomaly[0] and i < sleepTimeAnomaly[1] else 'rgba(252, 0, 0, 0.8)' for i in sleepTimeList]
+    sleepTimeHighlightColors = ['#2e59d9' if i > sleepTimeAnomaly[0] and i < sleepTimeAnomaly[1] else 'rgba(145, 0, 0, 0.8)' for i in sleepTimeList]
 
     ''' DISPLAY TEXT ''' 
     displayText = ""
@@ -232,6 +231,11 @@ def getData (userId):
             "heartRatePointColors": heartRatePointColors,
             "stepAsymmetryPoints": stepAsymmetryPoints,
             "stepAsymmetryPointColors": stepAsymmetryPointColors,
+            
+            "stepCountColors":stepCountColors,
+            "stepCountHighlightColors":stepCountHighlightColors,
+            "sleepTimeColors":sleepTimeColors,
+            "sleepTimeHighlightColors":sleepTimeHighlightColors,
 
             "dietLabels": ["Carbohydrates", "Vegetable", "Protein", "idk"],
             "dietData": [60, 20, 40, 10],

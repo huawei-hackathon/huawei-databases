@@ -35,8 +35,8 @@ var stepsBarChart = new Chart(stepsBarChartHTML, {
     labels: datesOfMonth,
     datasets: [{
       label: "Step Count",
-      backgroundColor: "#4e73df",
-      hoverBackgroundColor: "#2e59d9",
+      backgroundColor: stepCountColors,
+      hoverBackgroundColor: stepCountHighlightColors,
       borderColor: "#4e73df",
       data: stepsList,
     }],
@@ -108,7 +108,72 @@ var stepsBarChart = new Chart(stepsBarChartHTML, {
           return number_format(tooltipItem[0].yLabel) + ' Steps';
         }
       }
-    },
+    }, annotation: {
+      annotations:[{
+        type: 'line',
+        drawTime: 'afterDatasetsDraw',
+        id: 'stepCountHigh',
+        mode: 'horizontal',
+        scaleID: 'y-axis-0',
+        value: stepCountAnomaly[1],
+        // endValue: 30,
+        borderColor: 'red',
+        borderWidth: 2,
+        // borderDash: [2, 2],
+        // borderDashOffset: 5,
+        onMouseover: function(e) {
+          // The annotation is is bound to the `this` variable
+          console.log("Annotation", e.type, this);
+        },
+        label: {
+            backgroundColor: 'rgba(256,256,256,0.7)',
+            fontFamily: "Nunito",
+            fontSize: 12,
+            // fontStyle: "bold",
+            fontColor: 'black',
+            xPadding: 8,
+            yPadding: 4,
+            cornerRadius: 4,
+            position: "center",
+            xAdjust: 0,
+            yAdjust: 0,
+            enabled: true,
+            content: "Predicted High"
+        }
+      },
+      {
+          type: 'line',
+          drawTime: 'afterDatasetsDraw',
+          id: 'stepCountLow',
+          mode: 'horizontal',
+          scaleID: 'y-axis-0',
+          value: stepCountAnomaly[0],
+          // endValue: 30,
+          borderColor: 'teal',
+          borderWidth: 2,
+          // borderDash: [2, 2],
+          // borderDashOffset: 5,
+          onMouseover: function(e) {
+            // The annotation is is bound to the `this` variable
+            console.log("Annotation", e.type, this);
+          },
+          label: {
+              backgroundColor: 'rgba(256,256,256,0.7)',
+              fontFamily: "Nunito",
+              fontSize: 12,
+              // fontStyle: "bold",
+              fontColor: 'black',
+              xPadding: 8,
+              yPadding: 4,
+              cornerRadius: 4,
+              position: "center",
+              xAdjust: 0,
+              yAdjust: 0,
+              enabled: true,
+              content: "Predicted Low"
+          }
+      }]
+    }
   }
 });
 
@@ -121,8 +186,8 @@ var sleepTimeBarChart = new Chart(sleepTimeBarChartHTML, {
     labels: datesOfMonth,
     datasets: [{
       label: "Sleep Time",
-      backgroundColor: "#4e73df",
-      hoverBackgroundColor: "#2e59d9",
+      backgroundColor: sleepTimeColors,
+      hoverBackgroundColor: sleepTimeHighlightColors,
       borderColor: "#4e73df",
       data: sleepTimeList,
     }],
@@ -194,7 +259,72 @@ var sleepTimeBarChart = new Chart(sleepTimeBarChartHTML, {
           return tooltipItem[0].yLabel + ' Hours';
         }
       }
-    },
+    },annotation: {
+      annotations:[{
+        type: 'line',
+        drawTime: 'afterDatasetsDraw',
+        id: 'sleepTimeHigh',
+        mode: 'horizontal',
+        scaleID: 'y-axis-0',
+        value: sleepTimeAnomaly[1],
+        // endValue: 30,
+        borderColor: 'red',
+        borderWidth: 2,
+        // borderDash: [2, 2],
+        // borderDashOffset: 5,
+        onMouseover: function(e) {
+          // The annotation is is bound to the `this` variable
+          console.log("Annotation", e.type, this);
+        },
+        label: {
+            backgroundColor: 'rgba(256,256,256,0.7)',
+            fontFamily: "Nunito",
+            fontSize: 12,
+            // fontStyle: "bold",
+            fontColor: 'black',
+            xPadding: 8,
+            yPadding: 4,
+            cornerRadius: 4,
+            position: "center",
+            xAdjust: 0,
+            yAdjust: 0,
+            enabled: true,
+            content: "Predicted High"
+        }
+      },
+      {
+          type: 'line',
+          drawTime: 'afterDatasetsDraw',
+          id: 'sleepTimeLow',
+          mode: 'horizontal',
+          scaleID: 'y-axis-0',
+          value: sleepTimeAnomaly[0],
+          // endValue: 30,
+          borderColor: 'teal',
+          borderWidth: 2,
+          // borderDash: [2, 2],
+          // borderDashOffset: 5,
+          onMouseover: function(e) {
+            // The annotation is is bound to the `this` variable
+            console.log("Annotation", e.type, this);
+          },
+          label: {
+              backgroundColor: 'rgba(256,256,256,0.7)',
+              fontFamily: "Nunito",
+              fontSize: 12,
+              // fontStyle: "bold",
+              fontColor: 'black',
+              xPadding: 8,
+              yPadding: 4,
+              cornerRadius: 4,
+              position: "center",
+              xAdjust: 0,
+              yAdjust: 0,
+              enabled: true,
+              content: "Predicted Low"
+          }
+      }]
+    }
   }
 });
 
