@@ -168,6 +168,24 @@ def runAnomaly(userId, healthInfoType):
     '''
     RUNS ANOMALY DETECTION ON THE HOURLY DATA FOR THE LAST 1 MONTH
     '''
+    mydb = mysql.connector.connect(
+        host="192.168.0.27",
+        user="root",
+        password=SQL_PASSWORD,
+        database='reports'
+    )
+
+    mycursor = mydb.cursor()
+    
+    ''' DATA HAS BEEN GENERATED BEFORE, RETURN STORED DATA '''
+    sqlCommand = f"SELECT * FROM `anomalyData` WHERE userId = {userId} AND healthInfoType = '{healthInfoType}'"
+    mycursor.execute(sqlCommand)
+    result = mycursor.fetchone()
+    if result != None:
+       lower,upper = result[3], result[4] 
+       return lower, upper
+
+    ''' GENERATING NEW ANOMALY DATA ''' 
     now = datetime.now()
     lastday = datetime(now.year, now.month+1, 1) - timedelta(seconds=1) 
     firstday = lastday - relativedelta(years=1)
@@ -177,6 +195,9 @@ def runAnomaly(userId, healthInfoType):
         y.append(info[i])
     firstday = lastday - relativedelta(months=1) + timedelta(seconds = 1)
     lower,upper = getBoundaries(x,y, firstday)
+    sqlCommand = f"INSERT INTO `anomalyData` (userId, healthInfoType, lower, upper) VALUES ({userId}, '{healthInfoType}', {lower}, {upper})"
+    mycursor.execute(sqlCommand)
+    mydb.commit()
 
     return [lower,upper] 
 
