@@ -207,7 +207,7 @@ def hourlyAnomaly(userId, healthInfoType):
     while firstday < lastday:
         x.append(firstday)
         y.append(0)
-        if healthInfoType == 'sleepSeconds':
+        if healthInfoType == 'sleepseconds':
             firstday = firstday + relativedelta(days=1)
         else:
             firstday = firstday + timedelta(hours=1)
