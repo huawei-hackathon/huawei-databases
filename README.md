@@ -10,6 +10,7 @@ The file `app.py` contains the list of all routes. It redirects each set of rela
 The `/mockData` files help generate mock data for the back-end reports and the front-end app.
 
 ## Technical Stack
+![This is an image](readme/chart.png)
 
 ## Database Design
-![This is an image](img/database-design.png)
+![This is an image](readme/database.png)
