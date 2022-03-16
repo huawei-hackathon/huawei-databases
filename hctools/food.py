@@ -13,7 +13,9 @@ FOOD_IMAGES_BUCKET = 'hackathon-food-images'
 """ PREFIXES IS FOR RUNNING OF HUAWEI LIBRARY COMMANDS """
 OBSUTIL_PREFIX = './../obsutil/obsutil'
 
+''' ADDING MEAL THAT DOES NOT RUN FOOD RECOGNITION FOR REPORTS ''' 
 def mockMeal(userId, timestamp):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -31,6 +33,7 @@ def mockMeal(userId, timestamp):
     return imgId
 
 def uploadFoodObject(imagePath, userId): # Uploads a specific food item
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -69,8 +72,9 @@ def uploadFoodObject(imagePath, userId): # Uploads a specific food item
     return {'stauts': 200, 'foodFound': True}
 
 def getFoodObjectsByDate(userId, startDate, endDate): # Gets all images from a certain date
+    ''' READ REPLICA ''' 
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='food'
@@ -110,8 +114,9 @@ def getFoodObjectsByDate(userId, startDate, endDate): # Gets all images from a c
     return output
 
 def getLastMeal(userId):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='food'
@@ -130,7 +135,6 @@ def getLastMeal(userId):
     sqlCommand = f"SELECT * FROM `foodgroups` WHERE imgId = {result[0]}"
     mycursor.execute(sqlCommand)
     foodgroups = mycursor.fetchall()
-    print(foodgroups)
 
     return {
         'mealId': result[0],
@@ -146,6 +150,7 @@ def getLastMeal(userId):
     }
 
 def updateFoodGroup(foodId, foodGroup):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -160,6 +165,7 @@ def updateFoodGroup(foodId, foodGroup):
     return {'status':200}
 
 def addFoodGroup(mealId, foodName, foodGroup):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -178,6 +184,7 @@ def addFoodGroup(mealId, foodName, foodGroup):
     return {'foodId':foodId}
 
 def deleteEntry(foodId):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",

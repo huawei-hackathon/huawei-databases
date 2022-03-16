@@ -17,18 +17,14 @@ def mean(array):
 def number_of_days_in_month(year, month):
     return monthrange(year, month)[1]
 
-def sleepTimeHelp(sleepSeconds, flag = 0):
+def sleepTimeHelp(sleepSeconds):
     sleepSeconds *= 3600
     sleepMinutes = round(sleepSeconds/60)
     sleepHours = int(sleepMinutes/60)
     sleepMinutes -= 60*sleepHours
-    if flag == 1:
-        return [sleepHours, sleepMinutes]
-    sleepHours += (sleepMinutes/60)
-    return round(sleepHours,2)
+    return [sleepHours, sleepMinutes]
 
 def generateReport(uuid, userId):
-    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -43,9 +39,8 @@ def generateReport(uuid, userId):
     mydb.commit()
 
 def getReportInfo(uuid):
-    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.125",
+        host="192.168.0.27",
         user="root",
         password=SQL_PASSWORD,
         database='reports'
@@ -65,9 +60,8 @@ def getReportInfo(uuid):
         }
 
 def getData (userId):
-    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.125",
+        host="192.168.0.27",
         user="root",
         password=SQL_PASSWORD,
         database='reports'
@@ -87,6 +81,7 @@ def getData (userId):
     name = elderlyInfo['name']
 
     ''' HEART RATES ''' 
+
     heartRates = healthInfo.getHealthInformation("heartRate", userId, firstday, lastday, "month")
     heartRateList = [0] * daysInMonth
     for i in heartRates: heartRateList[i['x']-1] = i['y']
@@ -126,64 +121,17 @@ def getData (userId):
         pieData[-1] = round(pieData[-1], 0)
     percentages = [round(i/sum(pieData), 1) for i in pieData]
     pieDataWithText = [f"{pieData[i]} ({percentages[i]}%)" for i in range(len(pieData))]
-
-    bluetoothData = bluetooth.getBluetoothHistory(userId, firstday, lastday)
-    bluetoothData.sort(key = lambda x:x[1])
-    bluetoothData = bluetoothData[::-1]
-    
-    initTime = firstday + timedelta(seconds = 1)
-    endTime = lastday
-    timestamps = ["" for i in range(144)]
-    roomData = [{} for i in range(144)]
-    index = 0
-    currentRoom = 'Bedroom'
-
-    while initTime < endTime:
-        while len(bluetoothData) and bluetoothData[-1][1] < initTime:
-            currentRoom = bluetoothData[-1][0]
-            bluetoothData.pop()
-        if currentRoom in roomData[index].keys(): roomData[index][currentRoom] += 1
-        else: roomData[index][currentRoom] = 1
-
-        initTime += timedelta(minutes = 10)
-        index += 1
-        index %= 144
-    
-    now = datetime.now()
-    epoch = datetime.utcfromtimestamp(0)
-    for i in range(144):
-        time = datetime(now.year, now.month, now.day) + timedelta(minutes = 10*i)
-        timestamps[i] = 1000*(time - epoch).total_seconds()
-
-    rooms = ['Bathroom', 'Outside', 'Living Room', 'Kitchen', 'Bedroom']
-    bluetoothOutput = [[] for i in range(5)]
-    for i in range(144):
-        target = [4, 10, 10, 10, 0] # 0 to catch all with bedroom
-        ans = ""
-        for room in rooms:
-            ind = rooms.index(room)
-            if room in roomData[i].keys() and roomData[i][room] >= target[ind]:
-                ans = room
-                break
-        ind = rooms.index(ans)
-        ''' 28800000 is 8 hours, corrects for time difference between SGP time and GMT ''' 
-        bluetoothOutput[ind].append({
-            'starting_time': timestamps[i] - 28800000, 
-            'ending_time': timestamps[i] + 900000 - 28800000
-            })
-
-    toiletTime, outsideTime, livingRoomTime, kitchenTime, bedroomTime = bluetoothOutput[0], bluetoothOutput[1], bluetoothOutput[2], bluetoothOutput[3], bluetoothOutput[4]
-
-    graphStart = timestamps[0] - 28800000
-    graphEnd = timestamps[-1] + 600000 - 28800000
     
     ''' ANOMALY DETECTION '''
 
     heartRateAnomaly = healthInfo.runAnomaly(userId, 'heartRate')
     stepCountAnomaly = healthInfo.runAnomaly(userId, 'stepCount')
     stepAsymmetryAnomaly  = healthInfo.runAnomaly(userId, 'stepAsymmetry')
-    sleepSecondsAnomaly = healthInfo.runAnomaly(userId, 'sleepSeconds')
-    sleepTimeAnomaly = [sleepTimeHelp(i/3600) for i in sleepSecondsAnomaly]
+    sleepTimeAnomaly = healthInfo.runAnomaly(userId, 'sleepSeconds')
+    print(heartRateAnomaly)
+    print(stepCountAnomaly)
+    print(stepAsymmetryAnomaly)
+    print(sleepTimeAnomaly)
 
     ''' GRAPH ANNOTATION FOR ANOMALY '''
     heartRatePoints = [3 if i > heartRateAnomaly[0] and i < heartRateAnomaly[1] else 5 for i in heartRateList]
@@ -225,43 +173,6 @@ def getData (userId):
             sentimentText += f"{name} enjoys a healthy relationship with his caregiver, in total exchanging {caregiverMessages + elderlyMessages} messages over the course of month. His messages are often joyus with a mean sentiment value of {meanSentiment}, implying that he is in a good mood! "
             
     displayText += sentimentText
-
-    ''' FOOD DATA ''' 
-    lastday = datetime(now.year, now.month+1, 1) - timedelta(seconds=1) # TODO:CHANGE IN CASE IT CROSSES A YEAR BOUNDARY
-    firstday = lastday - relativedelta(months=1)
-    foodData = food.getFoodObjectsByDate(userId, firstday, lastday)
-    ''' POPULATE PIE CHART ''' 
-    foodGroupDistribution = {'dairy': 0, 'dessert': 0, 'protein': 0, 'grain': 0, 'vegetables': 0, 'fruit': 0}
-
-    for meal in foodData:
-        for f in meal['food']:
-            foodGroupDistribution[f['foodGroup']] += 1
-
-    dietLabels = list(foodGroupDistribution.keys())
-    dietLabels.sort()
-    dietValues = [foodGroupDistribution[i] for i in dietLabels]
-    foodTableData = []
-
-    ''' POPULATE TABLE ''' 
-    foodTableHeaders = ["Food", "Food Group", "Number of Times"]
-    for header in dietLabels:
-        hist = {}
-        for meal in foodData:
-            for f in meal['food']:
-                foodName = f['foodName']
-                foodGroup = f['foodGroup']
-                if foodGroup != header: continue
-                if foodName in hist.keys(): hist[foodName] += 1
-                else: hist[foodName] = 1
-        maxVal = 0
-        maxFood = ""
-        for i in hist: 
-            if hist[i]>maxVal:
-                maxVal = hist[i]
-                maxFood = i
-
-        if maxVal != 0:
-            foodTableData.append([maxFood, header, maxVal])
 
     data = {
             "elderlyName": elderlyInfo['name'],
@@ -305,8 +216,8 @@ def getData (userId):
 
             "avgSteps": mean(stepsList),
             "avgHeartRate": mean(heartRateList),
-            "avgSleepTime": sleepTimeHelp(mean(sleepTimeList), 1),
-            "avgWalkingAsymmetry": mean(asymmetryList),
+            "avgSleepTime": sleepTimeHelp(mean(sleepTimeList)),
+            "avgWalkingAsymmetry": mean(asymmetryList
             "heartRateAnomaly": heartRateAnomaly,
             "stepCountAnomaly": stepCountAnomaly,
             "stepAsymmetryAnomaly": stepAsymmetryAnomaly,
@@ -322,23 +233,11 @@ def getData (userId):
             "sleepTimeColors":sleepTimeColors,
             "sleepTimeHighlightColors":sleepTimeHighlightColors,
 
-            "dietLabels": dietLabels,
-            "dietData":dietValues,
+            "dietLabels": ["Carbohydrates", "Vegetable", "Protein", "idk"],
+            "dietData": [60, 20, 40, 10],
 
             "bluetoothPieChartLabels": roomNames,
             "bluetoothPieChartData": pieData,
-
-            "foodTableHeaders": foodTableHeaders,
-            "foodTableData": foodTableData,
-
-            "graphStart": graphStart,
-            "graphEnd": graphEnd,
-
-            "bedroomTime": bedroomTime,
-            "kitchenTime": kitchenTime,
-            "livingRoomTime": livingRoomTime,
-            "toiletTime": toiletTime,
-            "outsideTime": outsideTime,
 
             "dietAnalysis": "Idk some body of text here. Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. ", # we dont have the actual data yet
     }

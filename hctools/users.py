@@ -4,6 +4,7 @@ import mysql.connector
 from password import SQL_PASSWORD
 
 def createElderly(name, age, caregiverUserId, height, weight, bmi, gender):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -20,6 +21,7 @@ def createElderly(name, age, caregiverUserId, height, weight, bmi, gender):
     return {'userId': userId}
 
 def createCaregiver(name, password, username):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -49,8 +51,9 @@ def createCaregiver(name, password, username):
     return {'caregiverUserId': caregiverUserId}
 
 def authenticateCaregiver(username, password):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='users'
@@ -67,8 +70,9 @@ def authenticateCaregiver(username, password):
     return {'status': result}
 
 def getElderlyProfile(userId):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='users'

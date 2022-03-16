@@ -30,6 +30,7 @@ def getAudio(src):
         return ""
 
 def sendRequest(command, userId, data):
+    ''' MAIN NODE ''' 
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -53,6 +54,7 @@ def sendRequest(command, userId, data):
     return {'status': 300, 'error': 'Announcement Failed!'}
 
 def recordElderlyMessage(userId, audio):
+    ''' MAIN NODE ''' 
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -85,6 +87,7 @@ def recordElderlyMessage(userId, audio):
     return {'status': 200}
 
 def recordCaregiverMessage(userId, audio):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -111,6 +114,7 @@ def recordCaregiverMessage(userId, audio):
     return sendRequest('announceAudio', userId, {'URL': obsUrl})
 
 def announceMessage(userId, announcementText):
+    ''' MAIN NODE ''' 
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -127,6 +131,7 @@ def announceMessage(userId, announcementText):
     return sendRequest('announceMessage', userId, {'text': announcementText})
 
 def announcementEndpointUpdate(userId, tunnelUrl):
+    ''' MAIN NODE ''' 
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -151,8 +156,9 @@ def announcementEndpointUpdate(userId, tunnelUrl):
         return {'status': 200, 'comments': 'Updated Existing Entry'}
 
 def getConversation(userId):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='communication'
@@ -171,8 +177,9 @@ def getConversation(userId):
     } for i in result]
 
 def analyseConversation(userId, firstDate, lastDate):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='communication'
@@ -201,6 +208,7 @@ def analyseConversation(userId, firstDate, lastDate):
     }
 
 def mockElderlyMessage(userId, timestamp, sentiment):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -214,6 +222,7 @@ def mockElderlyMessage(userId, timestamp, sentiment):
     mydb.commit()
 
 def mockCaregiverMessage(userId, timestamp):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",

@@ -33,9 +33,9 @@ def getFoodGroups(img):
 
         foodGroupMapping = {
             'dairy': ['milk', 'cheese', 'tofu'],
-            'dessert': [],
-            'fruit': [],
-            'grain': ['bread', 'rice', 'noodles'],
+            'dessert': ['yogurt'],
+            'fruit': ['banana','fruit salad', 'pomegranate', 'quince'],
+            'grain': ['bread', 'rice', 'noodles', 'porridge', 'oatmeal porridge', 'semolia'],
             'protein': ['meat', 'meat hamburger'],
             'vegetables': ['vegetable', 'tomato']
         }

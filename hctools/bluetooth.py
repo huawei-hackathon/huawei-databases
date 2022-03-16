@@ -11,6 +11,7 @@ def number_of_days_in_month(year, month):
     return monthrange(year, month)[1]
 
 def locationUpdate(userId, roomName, timestamp):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -28,8 +29,9 @@ def locationUpdate(userId, roomName, timestamp):
     return {'status': 200}
 
 def currentLocation(userId):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='triggers'
@@ -51,8 +53,9 @@ def currentLocation(userId):
 def getBluetoothInformation(userId, firstDate, lastDate, frequency):
     print(firstDate, lastDate)
 
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='triggers'
@@ -129,8 +132,9 @@ def getBluetoothInformation(userId, firstDate, lastDate, frequency):
 
 def getBluetoothHistory(userId, firstDate, lastDate):
 
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='triggers'
