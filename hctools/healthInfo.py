@@ -12,8 +12,9 @@ def number_of_days_in_month(year, month):
     return monthrange(year, month)[1]
 
 def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='healthData'
@@ -109,6 +110,7 @@ def getHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency)
     return processedData
 
 def updateHealthInformation(healthInfoType, userId, value, timestamp):
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -129,8 +131,9 @@ def updateHealthInformation(healthInfoType, userId, value, timestamp):
     return {'status': 200}
 
 def getAllHealthInformation(healthInfoType, userId, firstDate, lastDate, frequency):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='healthData'
@@ -168,6 +171,7 @@ def runAnomaly(userId, healthInfoType):
     '''
     RUNS ANOMALY DETECTION ON THE HOURLY DATA FOR THE LAST 1 MONTH
     '''
+    ''' MAIN NODE '''
     mydb = mysql.connector.connect(
         host="192.168.0.27",
         user="root",
@@ -202,8 +206,9 @@ def runAnomaly(userId, healthInfoType):
     return [lower,upper] 
 
 def hourlyAnomaly(userId, healthInfoType):
+    ''' READ REPLICA '''
     mydb = mysql.connector.connect(
-        host="192.168.0.27",
+        host="192.168.0.125",
         user="root",
         password=SQL_PASSWORD,
         database='healthData'
