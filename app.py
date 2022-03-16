@@ -1,11 +1,7 @@
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, redirect
 
 from routes import food, users, announcements, healthInfo, reports, bluetooth
 app = Flask(__name__)
-
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
 
 ''' FOOD '''
 app.add_url_rule('/food/upload', view_func=food.uploadFoodImage, methods=['POST'])
@@ -39,7 +35,7 @@ app.add_url_rule('/generateReport', view_func = reports.generateReport, methods 
 app.add_url_rule('/getReport/<reportUUID>', view_func = reports.getReport, methods = ['GET'])
 app.add_url_rule('/mockReport', view_func = reports.getMockReport, methods=['GET'])
 app.add_url_rule('/mockAnomaly', view_func = reports.getMockAnomaly, methods=['GET'])
-app.add_url_rule('/customizeReport', view_func = reports.customizeReport, methods = ['GET', 'POST'])
+app.add_url_rule('/', view_func = reports.customizeReport, methods = ['GET', 'POST'])
 
 ''' BLUETOOTH '''
 app.add_url_rule('/locationUpdate', view_func = bluetooth.locationUpdate, methods=['POST'])
