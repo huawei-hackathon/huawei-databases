@@ -14,3 +14,7 @@ The `/mockData` files help generate mock data for the back-end reports and the f
 
 ## Database Design
 ![This is an image](readme/database.png)
+
+## Report Demo
+To demonstrate different kind of reports that can be generated, we created a webpage to try generating the reports for different profiles. This shows the different type of reports that can be made based on the user. 
+Try it out [here]('http://119.13.104.214')
