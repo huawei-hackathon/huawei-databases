@@ -9,6 +9,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
     <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
 
     <title>Elderberry Monthly Report Generator</title>
 
@@ -68,7 +69,7 @@
 
                                 <!-- Card Body -->
                                 <div class="card-body">
-                                    <form class="user" method="POST" action="/customizeReport" enctype="multipart/form-data">
+                                    <form class="user" method="POST" action="/" enctype="multipart/form-data">
                                         <!-- <div class="form-group row">
                                             <div class="col-sm-6 mb-3 mb-sm-0">
                                                 <input type="text" class="form-control form-control-user" id="exampleFirstName"
@@ -106,7 +107,7 @@
                                             </select>
                                         </div>
                                         
-                                        <button type="submit" class="btn btn-primary btn-user btn-block" href="/customizeReport">
+                                        <button type="submit" class="btn btn-primary btn-user btn-block" href="/customizeReport" onclick=onSubmit()>
                                             Generate Report!
                                         </button>
                                         <!-- <hr> -->
@@ -161,6 +162,11 @@
     <script src="/static/js/chart-pie.js"></script>
     <script src="/static/js/chart-bar.js"></script>
 
+	<script>
+		onSubmit = () => {
+			swal("Request Received!", "Generating 1 year of health data, you'll be redirected shortly", "success");
+		}
+	</script>
 </body>
 
 </html>
