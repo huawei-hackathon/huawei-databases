@@ -73,10 +73,17 @@ def customizeReport():
         sleepStatusMap = {"Sleeps Very Well":2, "Average Sleep Quality": 1, "Sleeps Poorly": 0}
         sleepStatus = sleepStatusMap[sleepStatusSelect]
 
-        ''' MOCK REPORT '''
-        data = {'activityStatus': activityStatus, 'indoorStatus': indoorStatus, 'sleepStatus': sleepStatus}
-        response = requests.get('http://119.13.104.214:80/mockReport', json=data)
+        id = activityStatus*9+indoorStatus*3+sleepStatus
+        data = {'userId': 277+id}
+        response = requests.post('http://119.13.104.214:80/generateReport', json=data)
         json = response.json()
-        url = json['url']
+        url = f"http://119.13.104.214/getReport/{json['id']}"
         return redirect(url)
+
+        ''' MOCK REPORT '''
+        #data = {'activityStatus': activityStatus, 'indoorStatus': indoorStatus, 'sleepStatus': sleepStatus}
+        #response = requests.get('http://119.13.104.214:80/mockReport', json=data)
+        #json = response.json()
+        #url = json['url']
+        #return redirect(url)
 

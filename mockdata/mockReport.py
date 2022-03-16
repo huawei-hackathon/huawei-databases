@@ -146,9 +146,9 @@ def generateReport(activityStatus, indoorStatus, sleepStatus):
         ''' TIME TO GO OUT '''
         if initDate.hour >= 11 and initDate.hour <= 19 and not cooldown:
             x = 5
-            if indoorStatus == 0: x = 7
-            if indoorStatus == 2: x = 3
-            if randrange(1,12) <= 4:
+            if indoorStatus == 2: x = 8
+            if indoorStatus == 0: x = 2
+            if randrange(1,12) <= x:
                 timestr = initDate.strftime("%Y-%m-%d, %H:%M:%S")
                 bluetooth.locationUpdate(elderlyUserId, "Outside", timestr)
                 initDate += timedelta(minutes = normal(180, 50), seconds=1)
